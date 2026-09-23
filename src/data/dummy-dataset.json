@@ -1,0 +1,399 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "tahun": 2025,
+    "sumber": "NFI Dummy Dataset"
+  },
+  "regions": [
+    {
+      "id": 1,
+      "province": "DI Yogyakarta",
+      "city": "Kota Yogyakarta",
+      "population": 422732,
+      "latitude": -7.7956,
+      "longitude": 110.3695
+    },
+    {
+      "id": 2,
+      "province": "Jawa Barat",
+      "city": "Kota Bandung",
+      "population": 2490622,
+      "latitude": -6.9175,
+      "longitude": 107.6191
+    },
+    {
+      "id": 3,
+      "province": "Jawa Timur",
+      "city": "Kota Surabaya",
+      "population": 2996600,
+      "latitude": -7.2575,
+      "longitude": 112.7521
+    },
+    {
+      "id": 4,
+      "province": "Bali",
+      "city": "Kota Denpasar",
+      "population": 946200,
+      "latitude": -8.6705,
+      "longitude": 115.2126
+    },
+    {
+      "id": 5,
+      "province": "DKI Jakarta",
+      "city": "Jakarta Pusat",
+      "population": 10670000,
+      "latitude": -6.2088,
+      "longitude": 106.8456
+    },
+    {
+      "id": 6,
+      "province": "Sumatera Utara",
+      "city": "Kota Medan",
+      "population": 2435252,
+      "latitude": 3.5952,
+      "longitude": 98.6722
+    },
+    {
+      "id": 7,
+      "province": "Sulawesi Selatan",
+      "city": "Kota Makassar",
+      "population": 1508154,
+      "latitude": -5.1477,
+      "longitude": 119.4327
+    },
+    {
+      "id": 8,
+      "province": "Papua",
+      "city": "Kota Jayapura",
+      "population": 381370,
+      "latitude": -2.5916,
+      "longitude": 140.669
+    }
+  ],
+  "budgets": [
+    {
+      "id": 1,
+      "region_id": 1,
+      "sector": "pendidikan",
+      "year": 2025,
+      "allocated_budget": 1200000000000,
+      "realized_budget": 1128000000000
+    },
+    {
+      "id": 2,
+      "region_id": 1,
+      "sector": "kesehatan",
+      "year": 2025,
+      "allocated_budget": 890000000000,
+      "realized_budget": 812000000000
+    },
+    {
+      "id": 3,
+      "region_id": 1,
+      "sector": "infrastruktur",
+      "year": 2025,
+      "allocated_budget": 1450000000000,
+      "realized_budget": 1290000000000
+    },
+    {
+      "id": 4,
+      "region_id": 2,
+      "sector": "pendidikan",
+      "year": 2025,
+      "allocated_budget": 8200000000000,
+      "realized_budget": 7544000000000
+    },
+    {
+      "id": 5,
+      "region_id": 2,
+      "sector": "kesehatan",
+      "year": 2025,
+      "allocated_budget": 5100000000000,
+      "realized_budget": 4437000000000
+    },
+    {
+      "id": 6,
+      "region_id": 2,
+      "sector": "infrastruktur",
+      "year": 2025,
+      "allocated_budget": 11400000000000,
+      "realized_budget": 9918000000000
+    },
+    {
+      "id": 7,
+      "region_id": 3,
+      "sector": "pendidikan",
+      "year": 2025,
+      "allocated_budget": 9400000000000,
+      "realized_budget": 8272000000000
+    },
+    {
+      "id": 8,
+      "region_id": 3,
+      "sector": "kesehatan",
+      "year": 2025,
+      "allocated_budget": 6200000000000,
+      "realized_budget": 5332000000000
+    },
+    {
+      "id": 9,
+      "region_id": 4,
+      "sector": "pendidikan",
+      "year": 2025,
+      "allocated_budget": 2100000000000,
+      "realized_budget": 1974000000000
+    },
+    {
+      "id": 10,
+      "region_id": 5,
+      "sector": "pendidikan",
+      "year": 2025,
+      "allocated_budget": 24800000000000,
+      "realized_budget": 22320000000000
+    }
+  ],
+  "assets": [
+    {
+      "id": "AST-0012847",
+      "region_id": 2,
+      "asset_type": "gedung",
+      "asset_name": "Gedung Kantor Gubernur Jabar",
+      "value": 284000000000,
+      "condition": "sedang",
+      "build_year": 1968,
+      "maintenance_cost": 5200000000,
+      "latitude": -6.9147,
+      "longitude": 107.6098
+    },
+    {
+      "id": "AST-0018492",
+      "region_id": 3,
+      "asset_type": "jembatan",
+      "asset_name": "Jembatan Suramadu",
+      "value": 4470000000000,
+      "condition": "baik",
+      "build_year": 2009,
+      "maintenance_cost": 84000000000,
+      "latitude": -7.1226,
+      "longitude": 112.7754
+    },
+    {
+      "id": "AST-0024711",
+      "region_id": 2,
+      "asset_type": "irigasi",
+      "asset_name": "Bendungan Jatigede",
+      "value": 2800000000000,
+      "condition": "baik",
+      "build_year": 2015,
+      "maintenance_cost": 42000000000,
+      "latitude": -6.9339,
+      "longitude": 108.1092
+    },
+    {
+      "id": "AST-0031088",
+      "region_id": 5,
+      "asset_type": "jalan",
+      "asset_name": "Jalan Trans Kalimantan Km 0-120",
+      "value": 840000000000,
+      "condition": "rusak_berat",
+      "build_year": 2004,
+      "maintenance_cost": 22000000000,
+      "latitude": 0.1,
+      "longitude": 109.3
+    },
+    {
+      "id": "AST-0037241",
+      "region_id": 3,
+      "asset_type": "gedung",
+      "asset_name": "RSUD Dr. Soetomo Surabaya",
+      "value": 1240000000000,
+      "condition": "perlu_revitalisasi",
+      "build_year": 1952,
+      "maintenance_cost": 28000000000,
+      "latitude": -7.2669,
+      "longitude": 112.7526
+    },
+    {
+      "id": "AST-0041122",
+      "region_id": 1,
+      "asset_type": "gedung",
+      "asset_name": "SMAN 1 Yogyakarta",
+      "value": 18500000000,
+      "condition": "baik",
+      "build_year": 1955,
+      "maintenance_cost": 380000000,
+      "latitude": -7.7832,
+      "longitude": 110.3698
+    },
+    {
+      "id": "AST-0055877",
+      "region_id": 6,
+      "asset_type": "jalan",
+      "asset_name": "Jalan Lintas Sumatera - Segmen Medan-Pematangsiantar",
+      "value": 620000000000,
+      "condition": "sedang",
+      "build_year": 1985,
+      "maintenance_cost": 18000000000,
+      "latitude": 3.2,
+      "longitude": 98.9
+    }
+  ],
+  "outcomes": [
+    {
+      "id": 1,
+      "region_id": 1,
+      "indicator": "ipm",
+      "value": 87.46,
+      "year": 2025
+    },
+    {
+      "id": 2,
+      "region_id": 1,
+      "indicator": "angka_kemiskinan",
+      "value": 7.12,
+      "year": 2025
+    },
+    {
+      "id": 3,
+      "region_id": 1,
+      "indicator": "ape_sekolah",
+      "value": 14.8,
+      "year": 2025
+    },
+    {
+      "id": 4,
+      "region_id": 2,
+      "indicator": "ipm",
+      "value": 74.84,
+      "year": 2025
+    },
+    {
+      "id": 5,
+      "region_id": 2,
+      "indicator": "angka_kemiskinan",
+      "value": 8.43,
+      "year": 2025
+    },
+    {
+      "id": 6,
+      "region_id": 2,
+      "indicator": "vfm_score",
+      "value": 79.2,
+      "year": 2025
+    },
+    {
+      "id": 7,
+      "region_id": 3,
+      "indicator": "ipm",
+      "value": 73.56,
+      "year": 2025
+    },
+    {
+      "id": 8,
+      "region_id": 3,
+      "indicator": "vfm_score",
+      "value": 76.8,
+      "year": 2025
+    },
+    {
+      "id": 9,
+      "region_id": 4,
+      "indicator": "ipm",
+      "value": 80.12,
+      "year": 2025
+    },
+    {
+      "id": 10,
+      "region_id": 4,
+      "indicator": "vfm_score",
+      "value": 85.1,
+      "year": 2025
+    },
+    {
+      "id": 11,
+      "region_id": 5,
+      "indicator": "ipm",
+      "value": 82.46,
+      "year": 2025
+    },
+    {
+      "id": 12,
+      "region_id": 6,
+      "indicator": "vfm_score",
+      "value": 71.3,
+      "year": 2025
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Ahmad Wijaya",
+      "email": "a.wijaya@kemenkeu.go.id",
+      "role": "Analis Fiskal Senior",
+      "access_level": "nasional"
+    },
+    {
+      "id": 2,
+      "name": "Siti Rahayu",
+      "email": "s.rahayu@bpk.go.id",
+      "role": "Auditor",
+      "access_level": "nasional"
+    },
+    {
+      "id": 3,
+      "name": "Budi Santoso",
+      "email": "b.santoso@jabarprov.go.id",
+      "role": "Perencana APBD",
+      "access_level": "provinsi"
+    },
+    {
+      "id": 4,
+      "name": "Dewi Kurniasih",
+      "email": "d.kurniasih@bandung.go.id",
+      "role": "Operator Kota",
+      "access_level": "kab_kota"
+    }
+  ],
+  "intelligence_alerts": [
+    {
+      "id": 1,
+      "severity": "high",
+      "sector": "infrastruktur",
+      "title": "Kesenjangan Anggaran-Kualitas Jalan Nasional",
+      "description": "Belanja pemeliharaan jalan meningkat 35% namun kualitas hanya naik 5%",
+      "potential_saving": 7200000000000,
+      "status": "active",
+      "created_at": "2025-09-20"
+    },
+    {
+      "id": 2,
+      "severity": "high",
+      "sector": "pendidikan",
+      "title": "Disparitas Biaya Konstruksi Sekolah Jawa Timur",
+      "description": "Biaya RK di Jatim 40% lebih tinggi dari rata-rata nasional",
+      "potential_saving": 2800000000000,
+      "status": "active",
+      "created_at": "2025-09-18"
+    },
+    {
+      "id": 3,
+      "severity": "medium",
+      "sector": "kesehatan",
+      "title": "Biaya Operasional Kesehatan Anomali",
+      "description": "Biaya non-medis RSUD di 4 provinsi 47% di atas benchmark",
+      "potential_saving": 1200000000000,
+      "status": "active",
+      "created_at": "2025-09-16"
+    },
+    {
+      "id": 4,
+      "severity": "low",
+      "sector": "kesehatan",
+      "title": "Peluang Konsolidasi Pengadaan Alkes",
+      "description": "Variasi harga 180-340% untuk item identik antar daerah",
+      "potential_saving": 4700000000000,
+      "status": "active",
+      "created_at": "2025-09-09"
+    }
+  ]
+}

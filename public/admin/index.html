@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="id" class="geist flex min-h-full w-full antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NFI AdminCN — Executive Fiscal Intelligence Dashboard</title>
+  <meta name="description" content="AdminCN style Dashboard for Nusantara Fiscal Intelligence Platform" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --background: #FFFFFF;
+      --foreground: #09090B;
+      --card: #FFFFFF;
+      --card-foreground: #09090B;
+      --popover: #FFFFFF;
+      --popover-foreground: #09090B;
+      --primary: #0F172A;
+      --primary-foreground: #F8FAFC;
+      --secondary: #F1F5F9;
+      --secondary-foreground: #0F172A;
+      --muted: #F1F5F9;
+      --muted-foreground: #64748B;
+      --accent: #F1F5F9;
+      --accent-foreground: #0F172A;
+      --destructive: #EF4444;
+      --destructive-foreground: #F8FAFC;
+      --border: #E2E8F0;
+      --input: #E2E8F0;
+      --ring: #0F172A;
+      --gold: #C9A227;
+      --gold-bg: rgba(201, 162, 39, 0.12);
+      --green-badge: #DCFCE7;
+      --green-text: #166534;
+      --amber-badge: #FEF3C7;
+      --amber-text: #92400E;
+      --red-badge: #FEE2E2;
+      --red-text: #991B1B;
+      --radius: 0.75rem;
+      --sidebar-width: 16rem;
+    }
+
+    .dark {
+      --background: #090D16;
+      --foreground: #F8FAFC;
+      --card: #0F172A;
+      --card-foreground: #F8FAFC;
+      --popover: #0F172A;
+      --popover-foreground: #F8FAFC;
+      --primary: #F8FAFC;
+      --primary-foreground: #0F172A;
+      --secondary: #1E293B;
+      --secondary-foreground: #F8FAFC;
+      --muted: #1E293B;
+      --muted-foreground: #94A3B8;
+      --accent: #1E293B;
+      --accent-foreground: #F8FAFC;
+      --border: #1E293B;
+      --input: #1E293B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .app-layout {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR (AdminCN Style) ────────────────────────────── */
+    aside.sidebar {
+      width: var(--sidebar-width);
+      border-right: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.25rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand-mark {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 0.5rem;
+      background: #0B1F3A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #C9A227;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .brand-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-desc {
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+    }
+
+    .sidebar-menu {
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
+    .menu-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted-foreground);
+      padding: 0.75rem 0.5rem 0.35rem;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: calc(var(--radius) - 4px);
+      color: var(--muted-foreground);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+
+    .menu-item.active {
+      background: var(--muted);
+      color: var(--foreground);
+      font-weight: 600;
+    }
+
+    .menu-item svg {
+      width: 1.1rem;
+      height: 1.1rem;
+      stroke-width: 2;
+    }
+
+    .menu-badge {
+      margin-left: auto;
+      font-size: 0.7rem;
+      background: var(--gold-bg);
+      color: var(--gold);
+      padding: 0.1rem 0.45rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      background: #0B1F3A;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .user-text {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .user-role {
+      font-size: 0.72rem;
+      color: var(--muted-foreground);
+    }
+
+    /* ── MAIN CONTENT ───────────────────────────────────────── */
+    main.main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      background: #F8FAFC;
+    }
+
+    /* ── HEADER (AdminCN Header) ────────────────────────────── */
+    header.top-header {
+      height: 3.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+    }
+
+    .breadcrumb-active {
+      color: var(--foreground);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .icon-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .icon-btn:hover {
+      background: var(--muted);
+      color: var(--foreground);
+    }
+
+    .icon-btn svg {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    .portal-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #0B1F3A;
+      background: #F1F5F9;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .portal-link-btn:hover {
+      background: #E2E8F0;
+    }
+
+    /* ── DASHBOARD BODY (AdminCN Grid) ──────────────────────── */
+    .dashboard-container {
+      padding: 1.75rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* 3-Col KPI Cards (AdminCN Order KPI Cards) */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .kpi-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .kpi-icon-box {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.375rem;
+      background: rgba(11, 31, 58, 0.08);
+      color: #0B1F3A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-icon-box svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .kpi-number {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .kpi-delta {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+
+    .delta-green { color: #16A34A; font-weight: 600; }
+    .delta-red { color: #DC2626; font-weight: 600; }
+    .delta-sub { color: var(--muted-foreground); }
+
+    /* Middle Row: Insight + Metrics (AdminCN layout) */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .card-header-flex {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Metric Sub-cards (2x2 grid inside left card) */
+    .metric-subgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-box {
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 2px);
+      padding: 0.85rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: #FAFAFA;
+    }
+
+    .metric-icon {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.375rem;
+      background: rgba(11, 31, 58, 0.08);
+      color: #0B1F3A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .metric-icon svg { width: 1.15rem; height: 1.15rem; }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .metric-lbl {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    /* Right Card: Progress & Allocation (AdminCN Total Earning style) */
+    .progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      margin-top: 0.5rem;
+    }
+
+    .prog-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .prog-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .prog-avatar {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 0.375rem;
+      background: #F1F5F9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #0B1F3A;
+    }
+
+    .prog-info h5 {
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .prog-info p {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    .prog-bar-container {
+      width: 100px;
+    }
+
+    .bar-bg {
+      height: 6px;
+      background: #E2E8F0;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: #0B1F3A;
+      border-radius: 9999px;
+    }
+
+    /* ── DATA TABLE (AdminCN Table Style) ───────────────────── */
+    .table-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .table-header-box {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .search-input {
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      outline: none;
+      width: 220px;
+    }
+
+    .filter-btn {
+      padding: 0.45rem 0.85rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--card);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table.admincn-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    table.admincn-table th {
+      padding: 0.85rem 1.25rem;
+      background: #F8FAFC;
+      color: var(--muted-foreground);
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    table.admincn-table td {
+      padding: 0.95rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    table.admincn-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.admincn-table tr:hover td {
+      background: #F8FAFC;
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-badge-av {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 9999px;
+      background: rgba(11, 31, 58, 0.1);
+      color: #0B1F3A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.65rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .badge-status.on-track { background: var(--green-badge); color: var(--green-text); }
+    .badge-status.akselerasi { background: var(--amber-badge); color: var(--amber-text); }
+    .badge-status.perhatian { background: var(--red-badge); color: var(--red-text); }
+
+    .action-btn {
+      padding: 0.35rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      background: #fff;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--muted);
+    }
+
+    @media (max-width: 1024px) {
+      .insights-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: 1fr; }
+      aside.sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ── SIDEBAR (AdminCN Style) ────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-mark">NF</div>
+      <div>
+        <div class="brand-name">NFI AdminCN</div>
+        <div class="brand-desc">Fiscal Intelligence OS</div>
+      </div>
+    </div>
+
+    <div class="sidebar-menu">
+      <div class="menu-label">Ikhtisar Fiskal</div>
+      <a class="menu-item active" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18M3 9h18"/>
+        </svg>
+        Executive Orders / APBN
+      </a>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+          <line x1="9" x2="9" y1="3" y2="18"/>
+          <line x1="15" x2="15" y1="6" y2="21"/>
+        </svg>
+        Fiscal Map Spasial
+        <span class="menu-badge">LIVE</span>
+      </a>
+
+      <div class="menu-label">Sektor Publik</div>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        Pendidikan (Sekolah)
+      </a>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Kesehatan (Faskes)
+      </a>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M3 17l2-10h14l2 10"/><line x1="3" y1="17" x2="21" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/>
+        </svg>
+        Infrastruktur Jalan
+      </a>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M2 12h20M2 6h8M14 6h8M2 18h4M18 18h4"/>
+        </svg>
+        Irigasi &amp; Air Bersih
+      </a>
+
+      <div class="menu-label">Analitik &amp; Audit</div>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
+        Asset Management (BMN)
+      </a>
+      <a class="menu-item" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        Fiscal AI Intelligence
+        <span class="menu-badge" style="background:rgba(239,68,68,0.15);color:#EF4444">3 ALERT</span>
+      </a>
+
+      <div class="menu-label">Portal &amp; Hub</div>
+      <a class="menu-item" href="../portal/index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Portal Publik (Serenique)
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-avatar">AW</div>
+      <div class="user-text">
+        <div class="user-name">Ahmad Wijaya</div>
+        <div class="user-role">Analis Fiskal Kemenkeu</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN AREA ─────────────────────────────────────────── -->
+  <main class="main-area">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="icon-btn" title="Toggle Sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
+          </svg>
+        </button>
+        <div class="breadcrumb">
+          <span>NFI Platform</span>
+          <span>/</span>
+          <span>Fiscal Orders &amp; Realization</span>
+          <span>/</span>
+          <span class="breadcrumb-active">Executive Dashboard</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="../portal/index.html" class="portal-link-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          </svg>
+          Portal Utama
+        </a>
+        <a href="../index.html" class="portal-link-btn" style="background:#0B1F3A;color:#fff;border-color:#0B1F3A">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+          </svg>
+          Peta Wilayah
+        </a>
+        <button class="icon-btn" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboard Body -->
+    <div class="dashboard-container">
+
+      <!-- Row 1: AdminCN 3 Top Cards -->
+      <div class="kpi-row">
+        <!-- Card 1: Total Realisasi -->
+        <div class="card">
+          <div class="kpi-header">
+            <div class="kpi-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>
+              </svg>
+            </div>
+            <div class="kpi-number">Rp 2.917 T</div>
+          </div>
+          <div>
+            <div class="kpi-title">Realisasi Belanja Negara</div>
+            <div class="kpi-delta">
+              <span class="delta-green">+18.2%</span>
+              <span class="delta-sub">serapan vs semester lalu</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Anomali Efisiensi -->
+        <div class="card">
+          <div class="kpi-header">
+            <div class="kpi-icon-box" style="background:rgba(239,68,68,0.1);color:#EF4444">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+              </svg>
+            </div>
+            <div class="kpi-number">12 Temuan</div>
+          </div>
+          <div>
+            <div class="kpi-title">Anomali Belanja Terdeteksi</div>
+            <div class="kpi-delta">
+              <span class="delta-red">Rp 18,4 T</span>
+              <span class="delta-sub">potensi inefisiensi anggaran</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Target VFM -->
+        <div class="card">
+          <div class="kpi-header">
+            <div class="kpi-icon-box" style="background:rgba(201,162,39,0.15);color:#C9A227">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>
+              </svg>
+            </div>
+            <div class="kpi-number">73,4 / 100</div>
+          </div>
+          <div>
+            <div class="kpi-title">Value For Money Index</div>
+            <div class="kpi-delta">
+              <span class="delta-green">+4.1 Poin</span>
+              <span class="delta-sub">peningkatan efektivitas</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Sales Metrics & Allocation (AdminCN Layout) -->
+      <div class="insights-grid">
+
+        <!-- Left Big Card: Fiscal Metrics & Subgrid -->
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <div class="card-title">Matriks Anggaran &amp; Belanja Modal Nasional</div>
+              <div class="card-subtitle">Laporan Terkonsolidasi APBN / APBD 2025 · Update Terakhir 23 September 2025</div>
+            </div>
+            <div style="font-size:0.8rem;color:#0B1F3A;background:#E2E8F0;padding:0.25rem 0.65rem;border-radius:0.375rem;font-weight:600">
+              KEMENKEU RI
+            </div>
+          </div>
+
+          <div class="metric-subgrid">
+            <div class="metric-box">
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+                </svg>
+              </div>
+              <div>
+                <div class="metric-lbl">Total APBN 2025</div>
+                <div class="metric-val">Rp 3.325,1 T</div>
+              </div>
+            </div>
+
+            <div class="metric-box">
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="M9 9h.01"/><path d="M15 15h.01"/>
+                </svg>
+              </div>
+              <div>
+                <div class="metric-lbl">Belanja Modal (Capex)</div>
+                <div class="metric-val">Rp 505,2 T</div>
+              </div>
+            </div>
+
+            <div class="metric-box">
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              </div>
+              <div>
+                <div class="metric-lbl">Transfer ke Daerah (TKD)</div>
+                <div class="metric-val">Rp 857,6 T</div>
+              </div>
+            </div>
+
+            <div class="metric-box">
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.1 6h17.8"/><path d="M3.4 5.5A2 2 0 0 0 3 6.7V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.7a2 2 0 0 0-.4-1.2l-2-2.7A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="metric-lbl">Total Kontrak Pengadaan</div>
+                <div class="metric-val">124.810 Paket</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mini trend chart placeholder -->
+          <div style="border-top:1px solid var(--border);padding-top:1rem;display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <span style="font-size:0.8rem;color:var(--muted-foreground)">Elastisitas Belanja terhadap Outcome Publik</span>
+              <div style="font-size:1.15rem;font-weight:700">1 : 0.84 <span style="font-size:0.8rem;color:#16A34A;font-weight:600">Efektif</span></div>
+            </div>
+            <a href="../index.html" class="action-btn">Buka Fiscal Analytics →</a>
+          </div>
+        </div>
+
+        <!-- Right Card: Sector Allocations (AdminCN Total Earning list) -->
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <div class="card-title">Serapan Belanja Utama</div>
+              <div class="card-subtitle">Per Kementerian Kunci</div>
+            </div>
+            <button class="action-btn">Filter</button>
+          </div>
+
+          <div class="progress-list">
+            <div class="prog-item">
+              <div class="prog-brand">
+                <div class="prog-avatar">PU</div>
+                <div class="prog-info">
+                  <h5>Kementerian PUPR</h5>
+                  <p>Infrastruktur &amp; Jalan</p>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <span style="font-size:0.875rem;font-weight:600">Rp 119,4 T</span>
+                <div class="prog-bar-container">
+                  <div class="bar-bg"><div class="bar-fill" style="width:81%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-brand">
+                <div class="prog-avatar" style="background:#EFF6FF;color:#2563EB">KD</div>
+                <div class="prog-info">
+                  <h5>Kemendikbudristek</h5>
+                  <p>Pendidikan &amp; Sekolah</p>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <span style="font-size:0.875rem;font-weight:600">Rp 89,2 T</span>
+                <div class="prog-bar-container">
+                  <div class="bar-bg"><div class="bar-fill" style="width:90%;background:#2563EB"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-brand">
+                <div class="prog-avatar" style="background:#F0FDF4;color:#16A34A">KS</div>
+                <div class="prog-info">
+                  <h5>Kementerian Kesehatan</h5>
+                  <p>Faskes &amp; RSUD</p>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <span style="font-size:0.875rem;font-weight:600">Rp 74,1 T</span>
+                <div class="prog-bar-container">
+                  <div class="bar-bg"><div class="bar-fill" style="width:86%;background:#16A34A"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="prog-item">
+              <div class="prog-brand">
+                <div class="prog-avatar" style="background:#FFFBEB;color:#D97706">HB</div>
+                <div class="prog-info">
+                  <h5>Kementerian Perhubungan</h5>
+                  <p>Logistik &amp; Pelabuhan</p>
+                </div>
+              </div>
+              <div style="text-align:right">
+                <span style="font-size:0.875rem;font-weight:600">Rp 31,7 T</span>
+                <div class="prog-bar-container">
+                  <div class="bar-bg"><div class="bar-fill" style="width:74%;background:#D97706"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Row 3: AdminCN Data Table for Budget / Orders Execution -->
+      <div class="card table-card">
+        <div class="table-header-box">
+          <div>
+            <div class="card-title">Daftar Eksekusi Belanja Daerah &amp; Indeks Manfaat (Orders)</div>
+            <div class="card-subtitle">Pemantauan SP2D, Realisasi Belanja Modal, dan Status Outcome per Wilayah</div>
+          </div>
+          <div class="table-actions">
+            <input class="search-input" placeholder="Cari wilayah atau kementerian..." />
+            <button class="filter-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+              </svg>
+              Filter Status
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admincn-table">
+            <thead>
+              <tr>
+                <th>Wilayah / Satker</th>
+                <th>Alokasi Pagu</th>
+                <th>Realisasi Belanja</th>
+                <th>Status Serapan</th>
+                <th>VFM Index</th>
+                <th>Aset Dihasilkan</th>
+                <th>Tindakan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-badge-av">BDG</div>
+                    <div>
+                      <div style="font-weight:600">Kota Bandung</div>
+                      <div style="font-size:0.75rem;color:var(--muted-foreground)">Jawa Barat · 2.49 Juta Jiwa</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-weight:600">Rp 7,85 T</td>
+                <td style="color:#16A34A;font-weight:600">Rp 6,94 T (88,4%)</td>
+                <td><span class="badge-status on-track">On Track</span></td>
+                <td><strong style="color:#0B1F3A">82,4</strong> / 100</td>
+                <td>1.428 Sekolah, 34 Puskesmas</td>
+                <td>
+                  <button class="action-btn" onclick="window.location.href='../index.html'">Audit Spasial</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-badge-av">SBY</div>
+                    <div>
+                      <div style="font-weight:600">Kota Surabaya</div>
+                      <div style="font-size:0.75rem;color:var(--muted-foreground)">Jawa Timur · 2.99 Juta Jiwa</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-weight:600">Rp 10,4 T</td>
+                <td style="color:#16A34A;font-weight:600">Rp 9,12 T (87,6%)</td>
+                <td><span class="badge-status on-track">On Track</span></td>
+                <td><strong style="color:#0B1F3A">81,2</strong> / 100</td>
+                <td>Jembatan Suramadu, RSUD Soetomo</td>
+                <td>
+                  <button class="action-btn" onclick="window.location.href='../index.html'">Audit Spasial</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-badge-av" style="background:#FEF3C7;color:#D97706">MDN</div>
+                    <div>
+                      <div style="font-weight:600">Kota Medan</div>
+                      <div style="font-size:0.75rem;color:var(--muted-foreground)">Sumatera Utara · 2.43 Juta Jiwa</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-weight:600">Rp 6,42 T</td>
+                <td style="color:#D97706;font-weight:600">Rp 4,88 T (76,0%)</td>
+                <td><span class="badge-status akselerasi">Perlu Akselerasi</span></td>
+                <td><strong style="color:#D97706">71,3</strong> / 100</td>
+                <td>Lintas Sumatera, 840 SMP</td>
+                <td>
+                  <button class="action-btn" onclick="window.location.href='../index.html'">Audit Spasial</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="user-cell">
+                    <div class="user-badge-av" style="background:#FEE2E2;color:#DC2626">JYP</div>
+                    <div>
+                      <div style="font-weight:600">Kota Jayapura</div>
+                      <div style="font-size:0.75rem;color:var(--muted-foreground)">Papua · 381 Ribu Jiwa</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="font-weight:600">Rp 2,15 T</td>
+                <td style="color:#DC2626;font-weight:600">Rp 1,32 T (61,3%)</td>
+                <td><span class="badge-status perhatian">Perlu Perhatian</span></td>
+                <td><strong style="color:#DC2626">54,8</strong> / 100</td>
+                <td>Trans Papua Km 0-80, SDN 5 Jayapura</td>
+                <td>
+                  <button class="action-btn" onclick="window.location.href='../index.html'">Audit Spasial</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+</body>
+</html>

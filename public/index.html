@@ -1,0 +1,2208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>NFI — Nusantara Fiscal Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js"></script>
+<style>
+/* ── TOKENS ──────────────────────────────────────────────────── */
+:root {
+  --navy:      #0B1F3A;
+  --navy-mid:  #122845;
+  --navy-lite: #1A3A5C;
+  --gold:      #C9A227;
+  --gold-lite: #E2BD4E;
+  --gold-dim:  #9A7C1E;
+  --bg:        #F8FAFC;
+  --surface:   #FFFFFF;
+  --surface2:  #F1F5F9;
+  --border:    #E2E8F0;
+  --border2:   #CBD5E1;
+  --text:      #0F172A;
+  --text-mid:  #334155;
+  --text-low:  #64748B;
+  --text-xlow: #94A3B8;
+  --green:     #16A34A;
+  --green-bg:  #DCFCE7;
+  --red:       #DC2626;
+  --red-bg:    #FEE2E2;
+  --amber:     #D97706;
+  --amber-bg:  #FEF3C7;
+  --blue:      #2563EB;
+  --blue-bg:   #DBEAFE;
+  --sidebar-w: 240px;
+  --topbar-h:  56px;
+  --radius:    8px;
+  --radius-lg: 12px;
+  --shadow:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+}
+
+/* ── RESET ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+svg { display: block; }
+
+/* ── LAYOUT ──────────────────────────────────────────────────── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ─────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 20;
+}
+.sidebar::-webkit-scrollbar { width: 0; }
+
+.sidebar-brand {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.3px;
+}
+.logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .5px;
+  margin-top: 2px;
+  padding-left: 42px;
+}
+
+.sidebar-section {
+  padding: 20px 0 8px;
+}
+.sidebar-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: rgba(255,255,255,.25);
+  padding: 0 18px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 18px;
+  color: rgba(255,255,255,.55);
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background .15s, color .15s, border-color .15s;
+  position: relative;
+}
+.nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+.nav-item.active {
+  background: rgba(201,162,39,.12);
+  color: var(--gold);
+  border-left-color: var(--gold);
+  font-weight: 500;
+}
+.nav-item .nav-icon { width: 16px; height: 16px; opacity: .7; flex-shrink: 0; }
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 20px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 18px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+  flex-shrink: 0;
+}
+.user-info { overflow: hidden; }
+.user-name { font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { font-size: 10px; color: rgba(255,255,255,.35); }
+
+/* ── MAIN ─────────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── TOPBAR ──────────────────────────────────────────────────── */
+.topbar {
+  height: var(--topbar-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.topbar-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.topbar-breadcrumb {
+  font-size: 12px;
+  color: var(--text-low);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-breadcrumb span { color: var(--text-xlow); }
+.topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.topbar-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface2);
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .15s;
+}
+.topbar-pill:hover { background: var(--border); }
+.topbar-pill svg { width: 13px; height: 13px; }
+
+.topbar-btn {
+  background: var(--navy);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background .15s;
+}
+.topbar-btn:hover { background: var(--navy-lite); }
+
+/* ── CONTENT ─────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px;
+}
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* ── SHARED COMPONENTS ───────────────────────────────────────── */
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.section-title { font-size: 16px; font-weight: 600; color: var(--text); }
+.section-sub { font-size: 12px; color: var(--text-low); margin-top: 2px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.card-sm { padding: 16px; }
+
+/* ── STAT CARDS ─────────────────────────────────────────────── */
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--border));
+}
+.stat-card.gold::after { --accent: var(--gold); }
+.stat-card.green::after { --accent: var(--green); }
+.stat-card.blue::after { --accent: var(--blue); }
+.stat-card.amber::after { --accent: var(--amber); }
+.stat-card.navy::after { --accent: var(--navy-lite); }
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-low);
+  letter-spacing: .3px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.stat-label .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent-dot, var(--border2));
+}
+.stat-card.gold .dot { background: var(--gold); }
+.stat-card.green .dot { background: var(--green); }
+.stat-card.blue .dot { background: var(--blue); }
+.stat-card.amber .dot { background: var(--amber); }
+.stat-card.navy .dot { background: var(--navy-lite); }
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-unit { font-size: 13px; font-weight: 500; color: var(--text-low); }
+.stat-delta {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 8px;
+}
+.stat-delta.up { background: var(--green-bg); color: var(--green); }
+.stat-delta.down { background: var(--red-bg); color: var(--red); }
+
+/* ── INSIGHT BANNER ─────────────────────────────────────────── */
+.insight-banner {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lite) 100%);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.insight-icon {
+  width: 36px; height: 36px;
+  background: rgba(201,162,39,.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.insight-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+.insight-text { font-size: 12px; color: rgba(255,255,255,.6); line-height: 1.6; }
+.insight-chips { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.insight-chip {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.1);
+  color: rgba(255,255,255,.7);
+  letter-spacing: .3px;
+}
+.insight-chip.warn { background: rgba(201,162,39,.2); color: var(--gold); }
+
+/* ── TABLES ──────────────────────────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-low);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: .3px;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 11px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-mid);
+}
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td { background: var(--surface2); }
+
+/* ── BADGES ──────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-red   { background: var(--red-bg); color: var(--red); }
+.badge-blue  { background: var(--blue-bg); color: var(--blue); }
+.badge-navy  { background: #EFF3FA; color: var(--navy); }
+
+/* ── PROGRESS BAR ────────────────────────────────────────────── */
+.progress-wrap { display: flex; align-items: center; gap: 10px; }
+.progress-bar { flex: 1; height: 5px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; transition: width .4s ease; }
+.progress-label { font-size: 11px; font-weight: 600; color: var(--text-mid); min-width: 32px; text-align: right; }
+
+/* ── INTELLIGENCE CARD ───────────────────────────────────────── */
+.intel-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.intel-card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.intel-severity {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.intel-severity.high   { background: var(--red); box-shadow: 0 0 0 3px var(--red-bg); }
+.intel-severity.medium { background: var(--amber); box-shadow: 0 0 0 3px var(--amber-bg); }
+.intel-severity.low    { background: var(--green); box-shadow: 0 0 0 3px var(--green-bg); }
+.intel-card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.intel-card-meta { font-size: 11px; color: var(--text-low); margin-left: auto; }
+.intel-card-body { padding: 14px 18px; }
+.intel-card-text { font-size: 12px; color: var(--text-mid); line-height: 1.6; margin-bottom: 10px; }
+.intel-actions { display: flex; gap: 8px; }
+.intel-action-btn {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.intel-action-btn:hover { background: var(--surface2); border-color: var(--text-low); }
+.intel-action-btn.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+.intel-action-btn.primary:hover { background: var(--navy-lite); }
+
+/* ── FISCAL MAP ──────────────────────────────────────────────── */
+.map-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+.map-svg-wrap {
+  width: 100%;
+  background: #EBF4FA;
+  position: relative;
+}
+.map-toolbar {
+  position: absolute;
+  top: 14px; left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 5;
+}
+.map-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: background .15s;
+}
+.map-btn:hover { background: var(--surface2); }
+.map-legend {
+  position: absolute;
+  bottom: 14px; right: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  box-shadow: var(--shadow);
+  z-index: 5;
+}
+.legend-title { font-size: 10px; font-weight: 600; color: var(--text-low); margin-bottom: 8px; }
+.legend-item { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.legend-label { font-size: 10px; color: var(--text-mid); }
+
+/* ── TABS ─────────────────────────────────────────────────────── */
+.tab-row {
+  display: flex;
+  gap: 2px;
+  background: var(--surface2);
+  padding: 3px;
+  border-radius: 8px;
+  width: fit-content;
+  margin-bottom: 20px;
+}
+.tab-btn {
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-low);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.tab-btn:hover:not(.active) { color: var(--text-mid); }
+
+/* ── FILTER BAR ──────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.filter-select {
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text-mid);
+  cursor: pointer;
+  outline: none;
+}
+.filter-select:focus { border-color: var(--navy); }
+.search-input {
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+  width: 200px;
+}
+.search-input::placeholder { color: var(--text-xlow); }
+.search-input:focus { border-color: var(--navy); }
+
+/* ── SPARKLINE ───────────────────────────────────────────────── */
+.sparkline { width: 80px; height: 28px; }
+
+/* ── VFM GAUGE ───────────────────────────────────────────────── */
+.vfm-gauge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 16px;
+}
+.vfm-score {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.vfm-label { font-size: 11px; color: var(--text-low); }
+.vfm-ring {
+  width: 100px; height: 100px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+/* ── SECTOR BAR ──────────────────────────────────────────────── */
+.sector-item { margin-bottom: 12px; }
+.sector-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.sector-name { font-size: 12px; font-weight: 500; color: var(--text-mid); }
+.sector-value { font-size: 12px; font-weight: 600; color: var(--text); }
+
+/* ── CHART WRAPPER ───────────────────────────────────────────── */
+.chart-wrap {
+  width: 100%;
+  position: relative;
+}
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.chart-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.chart-sub { font-size: 11px; color: var(--text-low); margin-top: 2px; }
+.chart-legend { display: flex; gap: 14px; }
+.chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-low); }
+.chart-legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── ASSET PILL ──────────────────────────────────────────────── */
+.asset-type-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--surface2);
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+}
+
+/* ── SCROLL X WRAP ───────────────────────────────────────────── */
+.scroll-x { overflow-x: auto; }
+.scroll-x::-webkit-scrollbar { height: 3px; }
+.scroll-x::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── PAGE HIDDEN ─────────────────────────────────────────────── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── DIVIDER ─────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* ── MINI KPI ROW ─────────────────────────────────────────────── */
+.kpi-row { display: flex; gap: 1px; background: var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+.kpi-cell {
+  flex: 1;
+  background: var(--surface);
+  padding: 16px 18px;
+}
+.kpi-cell-label { font-size: 10px; font-weight: 500; color: var(--text-low); margin-bottom: 6px; letter-spacing: .3px; }
+.kpi-cell-value { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.kpi-cell-delta { font-size: 10px; color: var(--text-low); margin-top: 3px; }
+.kpi-cell-delta .up { color: var(--green); font-weight: 600; }
+
+/* ── CITY DRILL ──────────────────────────────────────────────── */
+.city-hero {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-lite) 100%);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.city-hero::before {
+  content: '';
+  position: absolute;
+  right: -20px; top: -20px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(201,162,39,.15) 0%, transparent 70%);
+}
+.city-hero-name { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+.city-hero-sub { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 3px; }
+.city-hero-stats { display: flex; gap: 32px; margin-top: 20px; }
+.city-hero-stat-label { font-size: 10px; color: rgba(255,255,255,.45); margin-bottom: 4px; }
+.city-hero-stat-value { font-size: 16px; font-weight: 700; color: #fff; }
+
+
+/* ================= PREMIUM UI/UX OVERRIDE =================
+   Refinement pass: less "AI dashboard", more enterprise product
+============================================================ */
+
+:root{
+  --radius:14px;
+  --radius-lg:20px;
+  --shadow:0 8px 24px rgba(15,23,42,.06);
+  --shadow-md:0 18px 45px rgba(15,23,42,.10);
+}
+
+body{
+  letter-spacing:-0.01em;
+}
+
+.app{
+  background:
+    radial-gradient(circle at top right, rgba(201,162,39,.08), transparent 28%),
+    var(--bg);
+}
+
+/* Sidebar refinement */
+.sidebar{
+  background:linear-gradient(180deg,#091b34 0%,#102b4b 100%);
+  border-right:1px solid rgba(255,255,255,.08);
+}
+
+.logo,
+.brand{
+  letter-spacing:-.03em;
+}
+
+.nav-item{
+  border-radius:12px;
+  margin:4px 10px;
+  transition:.25s ease;
+}
+
+.nav-item:hover{
+  background:rgba(255,255,255,.08);
+  transform:translateX(3px);
+}
+
+.nav-item.active{
+  background:linear-gradient(90deg,rgba(201,162,39,.22),rgba(201,162,39,.06));
+  border-left:3px solid var(--gold);
+}
+
+/* Top navigation */
+.topbar{
+  backdrop-filter:blur(14px);
+  background:rgba(248,250,252,.78);
+  border-bottom:1px solid rgba(226,232,240,.8);
+}
+
+/* Cards */
+.card,
+.panel,
+.stat-card{
+  border:1px solid rgba(226,232,240,.85);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  transition:.25s ease;
+  overflow:hidden;
+}
+
+.card:hover,
+.panel:hover,
+.stat-card:hover{
+  transform:translateY(-3px);
+  box-shadow:var(--shadow-md);
+}
+
+.stat-card{
+  position:relative;
+  padding:22px;
+}
+
+.stat-card:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+
+/* Typography */
+h1,h2,h3,h4{
+  letter-spacing:-.035em;
+  font-weight:700;
+}
+
+h1{
+  font-size:30px!important;
+}
+
+.text-muted,
+.subtitle{
+  color:#64748b;
+}
+
+/* Tables */
+table{
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+thead th{
+  background:#f8fafc;
+  color:#475569;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+
+tbody tr{
+  transition:.2s ease;
+}
+
+tbody tr:hover{
+  background:#f8fafc;
+}
+
+/* Buttons */
+button,
+.btn{
+  border-radius:12px!important;
+  transition:.2s ease!important;
+}
+
+button:hover,
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+/* Badges */
+.badge,
+.tag,
+.status{
+  border-radius:999px!important;
+  padding:5px 12px!important;
+  font-weight:600;
+}
+
+/* Charts / dashboard breathing room */
+.content,
+.main-content{
+  padding:28px!important;
+}
+
+.grid,
+.dashboard-grid{
+  gap:20px!important;
+}
+
+/* Inputs */
+input,select{
+  border-radius:12px!important;
+  border:1px solid #dbe3ee!important;
+  padding:11px 14px!important;
+}
+
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--gold)!important;
+  box-shadow:0 0 0 4px rgba(201,162,39,.12);
+}
+
+/* Modal */
+.modal-content{
+  border-radius:22px!important;
+  box-shadow:0 30px 80px rgba(0,0,0,.22);
+}
+
+/* Remove generic AI feeling */
+*{
+  scrollbar-width:thin;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:20px;
+}
+
+@media(max-width:900px){
+  .content,.main-content{
+    padding:16px!important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">
+        <div class="logo-mark">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 1.5L16.5 5.5V12.5L9 16.5L1.5 12.5V5.5L9 1.5Z" stroke="#0B1F3A" stroke-width="1.5" fill="none"/>
+            <circle cx="9" cy="9" r="2.5" fill="#0B1F3A"/>
+          </svg>
+        </div>
+        <div class="logo-text">NFI</div>
+      </div>
+      <div class="logo-sub">Nusantara Fiscal Intelligence</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Nasional</div>
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard Nasional
+      </div>
+      <div class="nav-item" onclick="showPage('fiscalmap')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/><path d="M9 3v15M15 6v15"/></svg>
+        Fiscal Map
+        <span class="nav-badge">LIVE</span>
+      </div>
+      <div class="nav-item" onclick="showPage('anggaran')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Anggaran
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Sektor</div>
+      <div class="nav-item" onclick="showPage('pendidikan')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Pendidikan
+      </div>
+      <div class="nav-item" onclick="showPage('kesehatan')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Kesehatan
+      </div>
+      <div class="nav-item" onclick="showPage('jalan')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 17l2-10h14l2 10"/><line x1="3" y1="17" x2="21" y2="17"/><line x1="12" y1="7" x2="12" y2="17"/></svg>
+        Infrastruktur Jalan
+      </div>
+      <div class="nav-item" onclick="showPage('irigasi')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 12h20M2 6h8M14 6h8M2 18h4M18 18h4"/></svg>
+        Irigasi
+      </div>
+      <div class="nav-item" onclick="showPage('airbersih')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20"/></svg>
+        Air Bersih
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Analitik</div>
+      <div class="nav-item" onclick="showPage('assets')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        Asset Management
+      </div>
+      <div class="nav-item" onclick="showPage('outcome')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Outcome Analysis
+      </div>
+      <div class="nav-item" onclick="showPage('intelligence')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        Fiscal Intelligence
+        <span class="nav-badge">AI</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Sistem</div>
+      <div class="nav-item" onclick="showPage('admin')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Administration
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="user-avatar">AW</div>
+        <div class="user-info">
+          <div class="user-name">Ahmad Wijaya</div>
+          <div class="user-role">Analis Fiskal Senior</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar" id="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard Nasional</div>
+        <div class="topbar-breadcrumb">
+          <span>NFI</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 3L7.5 6L4.5 9" stroke="currentColor" stroke-width="1.2"/></svg>
+          <span id="topbar-crumb" style="color:var(--text-low)">Dashboard Nasional</span>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="topbar-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Nasional
+        </div>
+        <div class="topbar-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          2025
+        </div>
+        <button class="topbar-btn" onclick="showPage('intelligence')">
+          Jalankan AI Analisis
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: DASHBOARD NASIONAL
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-dashboard" class="page active">
+
+        <!-- Insight Banner -->
+        <div class="insight-banner">
+          <div class="insight-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <div class="insight-title">3 Anomali Terdeteksi oleh Fiscal Intelligence Engine</div>
+            <div class="insight-text">Belanja infrastruktur jalan meningkat 35% namun peningkatan kualitas hanya 5%. Biaya pembangunan sekolah Jawa Timur 40% di atas rata-rata nasional. Potensi inefisiensi belanja operasional kesehatan Rp 1,2 T.</div>
+            <div class="insight-chips">
+              <span class="insight-chip warn">⚠ Jalan &amp; Jembatan</span>
+              <span class="insight-chip warn">⚠ Pendidikan Jatim</span>
+              <span class="insight-chip warn">⚠ Kesehatan Operasional</span>
+              <span class="insight-chip">Lihat Semua Temuan →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Row -->
+        <div class="kpi-row">
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Total Anggaran Publik</div>
+            <div class="kpi-cell-value">Rp 3.325,1 T</div>
+            <div class="kpi-cell-delta"><span class="up">+8,4%</span> vs 2024</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Realisasi Belanja</div>
+            <div class="kpi-cell-value">Rp 2.917,4 T</div>
+            <div class="kpi-cell-delta"><span class="up">87,7%</span> terserap</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Total Aset Pemerintah</div>
+            <div class="kpi-cell-value">Rp 11.842 T</div>
+            <div class="kpi-cell-delta"><span class="up">+5,2%</span> vs 2024</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Wilayah Terintegrasi</div>
+            <div class="kpi-cell-value">514 / 514</div>
+            <div class="kpi-cell-delta"><span class="up">100%</span> cakupan</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Value for Money Index</div>
+            <div class="kpi-cell-value" style="color:var(--gold)">73,4</div>
+            <div class="kpi-cell-delta"><span class="up">+4,1</span> poin</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid-2" style="margin-bottom:20px">
+
+          <!-- Trend Anggaran -->
+          <div class="card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Tren Anggaran & Realisasi</div>
+                <div class="chart-sub">2020 – 2025 (Triliun Rupiah)</div>
+              </div>
+              <div class="chart-legend">
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#0B1F3A"></div> Alokasi</div>
+                <div class="chart-legend-item"><div class="chart-legend-dot" style="background:#C9A227"></div> Realisasi</div>
+              </div>
+            </div>
+            <canvas id="chart-trend" height="200"></canvas>
+          </div>
+
+          <!-- Distribusi Sektor -->
+          <div class="card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Distribusi Belanja Sektor 2025</div>
+                <div class="chart-sub">Proporsi dari Total APBN</div>
+              </div>
+            </div>
+            <div id="sector-bars">
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Infrastruktur</span><span class="sector-value">Rp 856,2 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:85%;background:#0B1F3A"></div></div>
+                  <div class="progress-label">25,7%</div>
+                </div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Pendidikan</span><span class="sector-value">Rp 665,0 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:67%;background:#1A3A5C"></div></div>
+                  <div class="progress-label">20,0%</div>
+                </div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Kesehatan</span><span class="sector-value">Rp 531,3 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:53%;background:#C9A227"></div></div>
+                  <div class="progress-label">16,0%</div>
+                </div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Perlindungan Sosial</span><span class="sector-value">Rp 497,8 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:50%;background:#2563EB"></div></div>
+                  <div class="progress-label">15,0%</div>
+                </div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Pertanian &amp; Pangan</span><span class="sector-value">Rp 332,5 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:33%;background:#16A34A"></div></div>
+                  <div class="progress-label">10,0%</div>
+                </div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Lainnya</span><span class="sector-value">Rp 442,3 T</span></div>
+                <div class="progress-wrap">
+                  <div class="progress-bar"><div class="progress-fill" style="width:44%;background:#94A3B8"></div></div>
+                  <div class="progress-label">13,3%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row -->
+        <div class="grid-2">
+
+          <!-- Anggaran vs Outcome -->
+          <div class="card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Anggaran vs Outcome Index</div>
+                <div class="chart-sub">10 Provinsi terpilih — Triliun Rupiah & Skor</div>
+              </div>
+            </div>
+            <canvas id="chart-outcome" height="220"></canvas>
+          </div>
+
+          <!-- Top Wilayah -->
+          <div class="card">
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Ranking Value for Money</div>
+                <div class="chart-sub">Provinsi berdasarkan efektivitas belanja 2025</div>
+              </div>
+              <button class="topbar-pill" style="font-size:11px;padding:4px 10px">Lihat Semua</button>
+            </div>
+            <div class="scroll-x">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Provinsi</th>
+                    <th>APBD</th>
+                    <th>Realisasi</th>
+                    <th>VFM Score</th>
+                    <th>Tren</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:700;color:var(--gold)">1</td>
+                    <td style="font-weight:500;color:var(--text)">DI Yogyakarta</td>
+                    <td>Rp 4,2 T</td>
+                    <td><span class="badge badge-green">94,1%</span></td>
+                    <td style="font-weight:700;color:var(--green)">88,4</td>
+                    <td>▲ +3,2</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:700;color:var(--text-low)">2</td>
+                    <td style="font-weight:500;color:var(--text)">Bali</td>
+                    <td>Rp 5,8 T</td>
+                    <td><span class="badge badge-green">91,7%</span></td>
+                    <td style="font-weight:700;color:var(--green)">85,1</td>
+                    <td>▲ +2,8</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:700;color:var(--text-low)">3</td>
+                    <td style="font-weight:500;color:var(--text)">Jawa Tengah</td>
+                    <td>Rp 24,1 T</td>
+                    <td><span class="badge badge-green">89,3%</span></td>
+                    <td style="font-weight:700;color:var(--green)">81,7</td>
+                    <td>▲ +1,9</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td style="font-weight:500;color:var(--text)">Jawa Barat</td>
+                    <td>Rp 31,4 T</td>
+                    <td><span class="badge badge-blue">87,2%</span></td>
+                    <td style="font-weight:700;">79,2</td>
+                    <td>▲ +0,7</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td style="font-weight:500;color:var(--text)">Jawa Timur</td>
+                    <td>Rp 35,2 T</td>
+                    <td><span class="badge badge-blue">85,6%</span></td>
+                    <td style="font-weight:700;">76,8</td>
+                    <td>▼ -0,4</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td style="font-weight:500;color:var(--text)">Sumatera Utara</td>
+                    <td>Rp 18,7 T</td>
+                    <td><span class="badge badge-amber">82,1%</span></td>
+                    <td style="font-weight:700;color:var(--amber)">71,3</td>
+                    <td>▲ +1,1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-dashboard -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: FISCAL MAP
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-fiscalmap" class="page">
+
+        <div class="filter-bar">
+          <select class="filter-select">
+            <option>Semua Sektor</option>
+            <option>Pendidikan</option>
+            <option>Kesehatan</option>
+            <option>Infrastruktur</option>
+          </select>
+          <select class="filter-select">
+            <option>2025</option>
+            <option>2024</option>
+            <option>2023</option>
+          </select>
+          <select class="filter-select">
+            <option>Heatmap Anggaran</option>
+            <option>VFM Score</option>
+            <option>Kondisi Aset</option>
+          </select>
+          <div class="tab-row" style="margin:0">
+            <button class="tab-btn active">Provinsi</button>
+            <button class="tab-btn">Kab/Kota</button>
+          </div>
+        </div>
+
+        <div class="grid-2" style="align-items:start">
+          <div class="map-container" style="grid-column:1/2">
+            <div class="map-svg-wrap" style="height:500px;display:flex;align-items:center;justify-content:center;position:relative">
+              <!-- Indonesia SVG Map (simplified) -->
+              <svg viewBox="0 0 900 420" style="width:100%;height:100%;padding:20px" onclick="handleMapClick(event)">
+                <defs>
+                  <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.12"/></filter>
+                </defs>
+                <!-- Sumatera -->
+                <g class="province-group" data-province="Sumatera Utara" onclick="selectProvince('Sumatera Utara',71.3,'Rp 18,7 T','82,1%')">
+                  <ellipse cx="180" cy="160" rx="90" ry="40" fill="#1A3A5C" fill-opacity=".75" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)" transform="rotate(-15,180,160)"/>
+                  <text x="180" y="164" text-anchor="middle" font-size="9" fill="#fff" font-weight="600" pointer-events="none">Sumatera</text>
+                </g>
+                <!-- Kalimantan -->
+                <g class="province-group" data-province="Kalimantan" onclick="selectProvince('Kalimantan Timur',68.4,'Rp 22,1 T','79,4%')">
+                  <ellipse cx="490" cy="195" rx="105" ry="70" fill="#0B1F3A" fill-opacity=".8" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="490" y="199" text-anchor="middle" font-size="9" fill="#fff" font-weight="600" pointer-events="none">Kalimantan</text>
+                </g>
+                <!-- Jawa -->
+                <g class="province-group" data-province="Jawa Barat" onclick="selectProvince('Jawa Barat',79.2,'Rp 31,4 T','87,2%')">
+                  <ellipse cx="360" cy="305" rx="120" ry="28" fill="#C9A227" fill-opacity=".85" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)" transform="rotate(-5,360,305)"/>
+                  <text x="360" y="309" text-anchor="middle" font-size="9" fill="#fff" font-weight="600" pointer-events="none">Jawa</text>
+                </g>
+                <!-- Sulawesi -->
+                <g class="province-group" data-province="Sulawesi Selatan" onclick="selectProvince('Sulawesi Selatan',66.7,'Rp 14,3 T','77,8%')">
+                  <path d="M650 140 Q660 160 655 185 Q670 210 660 235 Q680 245 685 265 Q670 270 660 255 Q650 260 645 245 Q630 235 635 215 Q620 200 625 175 Q635 155 650 140Z" fill="#16A34A" fill-opacity=".75" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="655" y="210" text-anchor="middle" font-size="8" fill="#fff" font-weight="600" pointer-events="none">Sulawesi</text>
+                </g>
+                <!-- Papua -->
+                <g class="province-group" data-province="Papua" onclick="selectProvince('Papua',52.1,'Rp 42,8 T','61,3%')">
+                  <ellipse cx="800" cy="240" rx="80" ry="65" fill="#64748B" fill-opacity=".65" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="800" y="244" text-anchor="middle" font-size="9" fill="#fff" font-weight="600" pointer-events="none">Papua</text>
+                </g>
+                <!-- Maluku -->
+                <g class="province-group" data-province="Maluku" onclick="selectProvince('Maluku',58.9,'Rp 6,1 T','70,2%')">
+                  <ellipse cx="730" cy="290" rx="30" ry="40" fill="#2563EB" fill-opacity=".65" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="730" y="294" text-anchor="middle" font-size="7.5" fill="#fff" font-weight="600" pointer-events="none">Maluku</text>
+                </g>
+                <!-- Nusa Tenggara -->
+                <g class="province-group" data-province="Nusa Tenggara" onclick="selectProvince('NTB',61.4,'Rp 7,8 T','73,1%')">
+                  <ellipse cx="510" cy="340" rx="65" ry="18" fill="#D97706" fill-opacity=".75" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="510" y="344" text-anchor="middle" font-size="8" fill="#fff" font-weight="600" pointer-events="none">Nusa Tenggara</text>
+                </g>
+                <!-- Bali dot -->
+                <g class="province-group" onclick="selectProvince('Bali',85.1,'Rp 5,8 T','91,7%')">
+                  <circle cx="468" cy="330" r="18" fill="#C9A227" fill-opacity=".9" stroke="#fff" stroke-width="1.5" style="cursor:pointer;filter:url(#shadow)"/>
+                  <text x="468" y="334" text-anchor="middle" font-size="7.5" fill="#fff" font-weight="600" pointer-events="none">Bali</text>
+                </g>
+              </svg>
+
+              <!-- Toolbar -->
+              <div class="map-toolbar">
+                <div class="map-btn">
+                  <svg width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div class="map-btn">
+                  <svg width="14" height="14" fill="none" stroke="var(--text)" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="map-legend">
+                <div class="legend-title">VFM Index</div>
+                <div class="legend-item"><div class="legend-dot" style="background:#C9A227"></div><div class="legend-label">≥80 — Sangat Baik</div></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#16A34A"></div><div class="legend-label">70–79 — Baik</div></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div><div class="legend-label">60–69 — Cukup</div></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#64748B"></div><div class="legend-label">&lt;60 — Perlu Perhatian</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Province Detail Panel -->
+          <div id="province-panel">
+            <div class="card" style="margin-bottom:16px">
+              <div id="province-empty" style="text-align:center;padding:40px 20px;color:var(--text-low)">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="margin:0 auto 12px;opacity:.4"><path d="M9 3L3 6v15l6-3 6 3 6-3V3l-6 3-6-3z"/></svg>
+                <div style="font-size:13px;font-weight:500;color:var(--text-mid)">Pilih wilayah</div>
+                <div style="font-size:11px;margin-top:4px">Klik area di peta untuk melihat detail fiskal wilayah</div>
+              </div>
+              <div id="province-detail" style="display:none">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                  <div>
+                    <div id="prov-name" style="font-size:16px;font-weight:700;color:var(--text)">—</div>
+                    <div id="prov-region" style="font-size:11px;color:var(--text-low);margin-top:2px">Provinsi · Indonesia</div>
+                  </div>
+                  <button onclick="showPage('fiscalmap_city')" style="font-size:11px;padding:6px 12px;border-radius:6px;background:var(--navy);color:#fff;border:none;cursor:pointer">Drill-Down →</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                  <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                    <div style="font-size:10px;color:var(--text-low);margin-bottom:4px">Total APBD</div>
+                    <div id="prov-apbd" style="font-size:15px;font-weight:700;color:var(--text)">—</div>
+                  </div>
+                  <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                    <div style="font-size:10px;color:var(--text-low);margin-bottom:4px">Realisasi</div>
+                    <div id="prov-realisasi" style="font-size:15px;font-weight:700;color:var(--green)">—</div>
+                  </div>
+                </div>
+                <div style="margin-bottom:10px">
+                  <div style="font-size:11px;font-weight:600;color:var(--text-low);margin-bottom:8px">VFM Score</div>
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <div id="prov-vfm" style="font-size:28px;font-weight:700;color:var(--navy);letter-spacing:-1px">—</div>
+                    <div style="flex:1">
+                      <div class="progress-bar" style="height:8px"><div id="prov-vfm-bar" class="progress-fill" style="background:var(--gold)"></div></div>
+                      <div style="font-size:10px;color:var(--text-xlow);margin-top:4px">dari 100 poin</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sector breakdown -->
+            <div class="card">
+              <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Belanja per Sektor</div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Infrastruktur</span><span class="sector-value">32%</span></div>
+                <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:64%;background:#0B1F3A"></div></div><span class="progress-label">Rp 6,1 T</span></div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Pendidikan</span><span class="sector-value">24%</span></div>
+                <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:48%;background:#C9A227"></div></div><span class="progress-label">Rp 4,6 T</span></div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Kesehatan</span><span class="sector-value">18%</span></div>
+                <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:36%;background:#16A34A"></div></div><span class="progress-label">Rp 3,4 T</span></div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Irigasi &amp; Air</span><span class="sector-value">10%</span></div>
+                <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:20%;background:#2563EB"></div></div><span class="progress-label">Rp 1,9 T</span></div>
+              </div>
+              <div class="sector-item">
+                <div class="sector-header"><span class="sector-name">Lainnya</span><span class="sector-value">16%</span></div>
+                <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:32%;background:#94A3B8"></div></div><span class="progress-label">Rp 3,1 T</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-fiscalmap -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: ANGGARAN
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-anggaran" class="page">
+
+        <div class="kpi-row">
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Total APBN 2025</div>
+            <div class="kpi-cell-value">Rp 3.325,1 T</div>
+            <div class="kpi-cell-delta"><span class="up">+8,4%</span></div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Pendapatan Negara</div>
+            <div class="kpi-cell-value">Rp 2.996,9 T</div>
+            <div class="kpi-cell-delta"><span class="up">+6,1%</span></div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Belanja Modal</div>
+            <div class="kpi-cell-value">Rp 400,3 T</div>
+            <div class="kpi-cell-delta"><span class="up">+12,7%</span></div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Defisit</div>
+            <div class="kpi-cell-value" style="color:var(--red)">Rp 328,2 T</div>
+            <div class="kpi-cell-delta">2,47% PDB</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Alokasi Anggaran vs Realisasi 2025 — Per Kementerian</div>
+              <div class="chart-sub">Data per September 2025 (Triliun Rupiah)</div>
+            </div>
+            <div class="filter-bar" style="margin:0">
+              <select class="filter-select"><option>Semua Kementerian</option></select>
+            </div>
+          </div>
+          <div class="scroll-x">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Kementerian/Lembaga</th>
+                  <th>Pagu</th>
+                  <th>Realisasi</th>
+                  <th>% Serapan</th>
+                  <th>Belanja Modal</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="font-weight:500;color:var(--text)">Kemendikbudristek</td><td>Rp 98,7 T</td><td>Rp 89,2 T</td><td><div class="progress-wrap"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:90%;background:#16A34A"></div></div><span style="font-size:12px;font-weight:600;color:var(--green)">90,4%</span></div></td><td>Rp 12,3 T</td><td><span class="badge badge-green">On Track</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text)">Kemenkes</td><td>Rp 86,4 T</td><td>Rp 74,1 T</td><td><div class="progress-wrap"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:86%;background:#16A34A"></div></div><span style="font-size:12px;font-weight:600;color:var(--green)">85,8%</span></div></td><td>Rp 8,7 T</td><td><span class="badge badge-green">On Track</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text)">PUPR</td><td>Rp 147,5 T</td><td>Rp 119,4 T</td><td><div class="progress-wrap"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:81%;background:#C9A227"></div></div><span style="font-size:12px;font-weight:600;color:var(--amber)">80,9%</span></div></td><td>Rp 88,2 T</td><td><span class="badge badge-amber">Perlu Akselerasi</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text)">Kemenhub</td><td>Rp 42,8 T</td><td>Rp 31,7 T</td><td><div class="progress-wrap"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:74%;background:#C9A227"></div></div><span style="font-size:12px;font-weight:600;color:var(--amber)">74,1%</span></div></td><td>Rp 18,4 T</td><td><span class="badge badge-amber">Perlu Akselerasi</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text)">Kementan</td><td>Rp 38,2 T</td><td>Rp 25,1 T</td><td><div class="progress-wrap"><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:66%;background:#DC2626"></div></div><span style="font-size:12px;font-weight:600;color:var(--red)">65,7%</span></div></td><td>Rp 9,1 T</td><td><span class="badge badge-red">Perhatian</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /page-anggaran -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: PENDIDIKAN
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-pendidikan" class="page">
+
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card gold">
+            <div class="stat-label"><div class="dot"></div> Total Sekolah</div>
+            <div class="stat-value">218.616</div>
+            <div class="stat-delta up">▲ +1.247 unit</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label"><div class="dot"></div> Anggaran Pendidikan</div>
+            <div class="stat-value">Rp 665,0 <span class="stat-unit">T</span></div>
+            <div class="stat-delta up">▲ +7,2%</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-label"><div class="dot"></div> Total Siswa</div>
+            <div class="stat-value">54,2 <span class="stat-unit">Juta</span></div>
+            <div class="stat-delta up">▲ +1,4%</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-label"><div class="dot"></div> Biaya per Siswa/Tahun</div>
+            <div class="stat-value">Rp 12,3 <span class="stat-unit">Juta</span></div>
+            <div class="stat-delta up">▲ +5,7%</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Inventaris Sekolah — Detail</div>
+              <div class="chart-sub">Klik nama sekolah untuk detail aset</div>
+            </div>
+            <div class="filter-bar" style="margin:0;gap:8px">
+              <input class="search-input" placeholder="Cari sekolah..." />
+              <select class="filter-select"><option>Semua Jenjang</option><option>SD</option><option>SMP</option><option>SMA</option></select>
+              <select class="filter-select"><option>Semua Kondisi</option><option>Baik</option><option>Sedang</option><option>Rusak</option></select>
+            </div>
+          </div>
+          <div class="scroll-x">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nama Sekolah</th>
+                  <th>Wilayah</th>
+                  <th>Jenjang</th>
+                  <th>Siswa</th>
+                  <th>Nilai Aset</th>
+                  <th>Tahun Bangun</th>
+                  <th>Maintenance/th</th>
+                  <th>Kondisi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;color:var(--text)">SMAN 1 Bandung</td>
+                  <td>Kota Bandung, Jabar</td>
+                  <td><span class="asset-type-pill">SMA</span></td>
+                  <td>1.248</td>
+                  <td>Rp 24,7 M</td>
+                  <td>1982</td>
+                  <td>Rp 480 Jt</td>
+                  <td><span class="badge badge-green">Baik</span></td>
+                  <td><button class="intel-action-btn" onclick="showSchoolModal()">Detail</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--text)">SDN 1 Surabaya</td>
+                  <td>Kota Surabaya, Jatim</td>
+                  <td><span class="asset-type-pill">SD</span></td>
+                  <td>612</td>
+                  <td>Rp 8,2 M</td>
+                  <td>1975</td>
+                  <td>Rp 210 Jt</td>
+                  <td><span class="badge badge-amber">Sedang</span></td>
+                  <td><button class="intel-action-btn">Detail</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--text)">SMPN 3 Medan</td>
+                  <td>Kota Medan, Sumut</td>
+                  <td><span class="asset-type-pill">SMP</span></td>
+                  <td>840</td>
+                  <td>Rp 14,1 M</td>
+                  <td>1990</td>
+                  <td>Rp 310 Jt</td>
+                  <td><span class="badge badge-amber">Sedang</span></td>
+                  <td><button class="intel-action-btn">Detail</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;color:var(--text)">SDN 5 Jayapura</td>
+                  <td>Kota Jayapura, Papua</td>
+                  <td><span class="asset-type-pill">SD</span></td>
+                  <td>324</td>
+                  <td>Rp 5,8 M</td>
+                  <td>2001</td>
+                  <td>Rp 140 Jt</td>
+                  <td><span class="badge badge-red">Perlu Perbaikan</span></td>
+                  <td><button class="intel-action-btn">Detail</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- School Modal -->
+        <div id="school-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none;align-items:center;justify-content:center">
+          <div style="background:var(--surface);border-radius:var(--radius-lg);width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">
+            <div style="background:var(--navy);padding:18px 22px;display:flex;align-items:center;justify-content:space-between">
+              <div>
+                <div style="font-size:15px;font-weight:700;color:#fff">SMAN 1 Bandung</div>
+                <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px">Jl. Ir. H. Juanda No.93, Kota Bandung</div>
+              </div>
+              <button onclick="closeSchoolModal()" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px">×</button>
+            </div>
+            <div style="padding:20px">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+                <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                  <div style="font-size:10px;color:var(--text-low)">Nilai Investasi</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px">Rp 24,7 M</div>
+                </div>
+                <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                  <div style="font-size:10px;color:var(--text-low)">Siswa</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px">1.248</div>
+                </div>
+                <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                  <div style="font-size:10px;color:var(--text-low)">Biaya/Siswa</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px">Rp 19,8 Jt</div>
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+                <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                  <div style="font-size:10px;color:var(--text-low)">Tahun Pembangunan</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px">1982</div>
+                  <div style="font-size:10px;color:var(--text-xlow);margin-top:2px">Usia aset: 43 tahun</div>
+                </div>
+                <div style="background:var(--surface2);border-radius:8px;padding:12px">
+                  <div style="font-size:10px;color:var(--text-low)">Biaya Maintenance/th</div>
+                  <div style="font-size:14px;font-weight:700;color:var(--text);margin-top:4px">Rp 480 Jt</div>
+                  <div style="font-size:10px;color:var(--amber);margin-top:2px">⚠ 1,94% nilai aset</div>
+                </div>
+              </div>
+              <div style="margin-bottom:12px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-low);margin-bottom:6px">Kondisi Bangunan</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-green">Struktur: Baik</span>
+                  <span class="badge badge-green">Atap: Baik</span>
+                  <span class="badge badge-amber">Sanitasi: Perlu Perbaikan</span>
+                  <span class="badge badge-green">Lab: Baik</span>
+                  <span class="badge badge-amber">Lapangan: Sedang</span>
+                </div>
+              </div>
+              <div style="background:#EFF3FA;border-radius:8px;padding:12px;border-left:3px solid var(--blue)">
+                <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:4px">Rekomendasi AI</div>
+                <div style="font-size:11px;color:var(--text-mid);line-height:1.6">Biaya maintenance per siswa (Rp 384.615) berada di atas median nasional (Rp 290.000). Pertimbangkan audit fisik dan pembaruan kontrak pemeliharaan untuk efisiensi 20–25%.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-pendidikan -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: INFRASTRUKTUR JALAN
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-jalan" class="page">
+
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card navy">
+            <div class="stat-label"><div class="dot"></div> Total Panjang Jalan</div>
+            <div class="stat-value">550.446 <span class="stat-unit">km</span></div>
+            <div class="stat-delta up">▲ +4.218 km</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-label"><div class="dot"></div> Nilai Aset Jalan</div>
+            <div class="stat-value">Rp 1.847 <span class="stat-unit">T</span></div>
+            <div class="stat-delta up">▲ +5,2%</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-label"><div class="dot"></div> Biaya Pemeliharaan</div>
+            <div class="stat-value">Rp 48,3 <span class="stat-unit">T</span></div>
+            <div class="stat-delta down">▼ Belanja +35%</div>
+          </div>
+          <div class="stat-card red" style="--accent:var(--red)">
+            <div class="stat-label"><div class="dot" style="background:var(--red)"></div> Jalan Rusak Berat</div>
+            <div class="stat-value">67.821 <span class="stat-unit">km</span></div>
+            <div class="stat-delta down" style="color:var(--red);background:var(--red-bg)">▼ 12,3% dari total</div>
+          </div>
+        </div>
+
+        <!-- Anomaly Alert -->
+        <div style="background:var(--red-bg);border:1px solid #FCA5A5;border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:12px">
+          <div style="width:8px;height:8px;background:var(--red);border-radius:50%;margin-top:5px;flex-shrink:0;box-shadow:0 0 0 3px rgba(220,38,38,.2)"></div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--red)">Anomali Terdeteksi — Efektivitas Belanja Rendah</div>
+            <div style="font-size:12px;color:#7F1D1D;margin-top:3px;line-height:1.6">Belanja pemeliharaan jalan nasional meningkat 35% (Rp 35,8T → Rp 48,3T) namun peningkatan kualitas jalan hanya 5%. Kualitas jalan baik stagnan di 57,3%. Diperlukan audit penggunaan anggaran.</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom:20px">
+          <div class="card">
+            <div class="chart-title" style="margin-bottom:14px">Kondisi Jalan Nasional 2025</div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Kondisi Baik</span><span class="sector-value">57,3%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:57.3%;background:#16A34A"></div></div><span class="progress-label">315.406 km</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Kondisi Sedang</span><span class="sector-value">30,4%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:30.4%;background:#C9A227"></div></div><span class="progress-label">167.219 km</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Rusak Ringan</span><span class="sector-value">9,5%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:9.5%;background:#D97706"></div></div><span class="progress-label">52.292 km</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Rusak Berat</span><span class="sector-value">2,8%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:2.8%;background:#DC2626"></div></div><span class="progress-label">15.529 km</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="chart-title" style="margin-bottom:14px">Cost per Kilometer — Perbandingan Wilayah</div>
+            <table class="data-table">
+              <thead><tr><th>Wilayah</th><th>Panjang</th><th>Cost/km</th><th>vs. Nasional</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500">Jawa Barat</td><td>28.421 km</td><td>Rp 72 Jt</td><td><span class="badge badge-green">-12%</span></td></tr>
+                <tr><td style="font-weight:500">Jawa Tengah</td><td>26.847 km</td><td>Rp 78 Jt</td><td><span class="badge badge-blue">-5%</span></td></tr>
+                <tr><td style="font-weight:500">Sumatera Utara</td><td>18.210 km</td><td>Rp 94 Jt</td><td><span class="badge badge-amber">+14%</span></td></tr>
+                <tr><td style="font-weight:500">Kalimantan Timur</td><td>12.388 km</td><td>Rp 118 Jt</td><td><span class="badge badge-amber">+43%</span></td></tr>
+                <tr><td style="font-weight:500">Papua</td><td>8.744 km</td><td>Rp 187 Jt</td><td><span class="badge badge-red">+127%</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /page-jalan -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: KESEHATAN
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-kesehatan" class="page">
+
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card blue">
+            <div class="stat-label"><div class="dot"></div> Faskes</div>
+            <div class="stat-value">10.321</div>
+            <div class="stat-delta up">▲ +312</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label"><div class="dot"></div> Anggaran Kesehatan</div>
+            <div class="stat-value">Rp 531,3 <span class="stat-unit">T</span></div>
+            <div class="stat-delta up">▲ +9,1%</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-label"><div class="dot"></div> Pasien/Tahun</div>
+            <div class="stat-value">284,7 <span class="stat-unit">Juta</span></div>
+            <div class="stat-delta up">▲ +6,4%</div>
+          </div>
+          <div class="stat-card amber">
+            <div class="stat-label"><div class="dot"></div> Biaya per Kunjungan</div>
+            <div class="stat-value">Rp 187 <span class="stat-unit">Rb</span></div>
+            <div class="stat-delta up">▲ +2,8%</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="chart-title" style="margin-bottom:14px">Distribusi Faskes per Tipe</div>
+            <table class="data-table">
+              <thead><tr><th>Tipe</th><th>Jumlah</th><th>Anggaran</th><th>Pasien/th</th><th>Kondisi</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500">RSUD</td><td>924</td><td>Rp 187,4 T</td><td>48,2 Jt</td><td><span class="badge badge-green">Baik</span></td></tr>
+                <tr><td style="font-weight:500">Puskesmas</td><td>4.287</td><td>Rp 122,8 T</td><td>168,4 Jt</td><td><span class="badge badge-amber">Sedang</span></td></tr>
+                <tr><td style="font-weight:500">Klinik Pratama</td><td>3.842</td><td>Rp 98,2 T</td><td>52,7 Jt</td><td><span class="badge badge-green">Baik</span></td></tr>
+                <tr><td style="font-weight:500">Posyandu</td><td>1.268</td><td>Rp 18,4 T</td><td>15,4 Jt</td><td><span class="badge badge-red">Perlu Perhatian</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="chart-title" style="margin-bottom:14px">Outcome Kesehatan 2025</div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Angka Harapan Hidup</span><span class="sector-value">73,4 tahun</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:73%;background:#16A34A"></div></div><span class="progress-label">▲ +0,8</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Cakupan JKN</span><span class="sector-value">93,8%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:93%;background:#0B1F3A"></div></div><span class="progress-label">▲ +2,1</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Rasio Dokter/1000 Pddk</span><span class="sector-value">0,68</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:34%;background:#C9A227"></div></div><span class="progress-label">▲ +0,05</span></div>
+            </div>
+            <div class="sector-item">
+              <div class="sector-header"><span class="sector-name">Kepuasan Layanan</span><span class="sector-value">79,2%</span></div>
+              <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:79%;background:#2563EB"></div></div><span class="progress-label">▲ +3,4</span></div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-kesehatan -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: ASSET MANAGEMENT
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-assets" class="page">
+
+        <div class="kpi-row">
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Total Aset Tercatat</div>
+            <div class="kpi-cell-value">2.847.124</div>
+            <div class="kpi-cell-delta">unit aset</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Nilai Total Aset</div>
+            <div class="kpi-cell-value">Rp 11.842 T</div>
+            <div class="kpi-cell-delta"><span class="up">+5,2%</span></div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Aset Kondisi Baik</div>
+            <div class="kpi-cell-value">68,4%</div>
+            <div class="kpi-cell-delta"><span class="up">+2,1 poin</span></div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Total Maintenance/th</div>
+            <div class="kpi-cell-value">Rp 184,7 T</div>
+            <div class="kpi-cell-delta">1,56% dari nilai aset</div>
+          </div>
+        </div>
+
+        <div class="tab-row">
+          <button class="tab-btn active">Daftar Aset</button>
+          <button class="tab-btn">Peta Sebaran</button>
+          <button class="tab-btn">Analisis Umur</button>
+        </div>
+
+        <div class="card">
+          <div class="filter-bar" style="margin-bottom:16px">
+            <input class="search-input" placeholder="Cari nama/ID aset..." />
+            <select class="filter-select"><option>Semua Jenis</option><option>Gedung</option><option>Jalan</option><option>Jembatan</option><option>Irigasi</option></select>
+            <select class="filter-select"><option>Semua Kondisi</option><option>Baik</option><option>Sedang</option><option>Rusak</option></select>
+            <select class="filter-select"><option>Semua Wilayah</option><option>DKI Jakarta</option><option>Jawa Barat</option><option>Jawa Timur</option></select>
+          </div>
+          <div class="scroll-x">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Aset</th>
+                  <th>Nama Aset</th>
+                  <th>Jenis</th>
+                  <th>Lokasi</th>
+                  <th>Nilai</th>
+                  <th>Th. Bangun</th>
+                  <th>Umur</th>
+                  <th>Maint./th</th>
+                  <th>Kondisi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="font-family:monospace;font-size:11px;color:var(--text-low)">AST-0012847</td><td style="font-weight:500;color:var(--text)">Gedung Kantor Gubernur Jabar</td><td><span class="asset-type-pill">Gedung</span></td><td>Kota Bandung</td><td>Rp 284 M</td><td>1968</td><td>57 th</td><td>Rp 5,2 M</td><td><span class="badge badge-amber">Sedang</span></td></tr>
+                <tr><td style="font-family:monospace;font-size:11px;color:var(--text-low)">AST-0018492</td><td style="font-weight:500;color:var(--text)">Jembatan Suramadu</td><td><span class="asset-type-pill">Jembatan</span></td><td>Surabaya–Bangkalan</td><td>Rp 4.470 M</td><td>2009</td><td>16 th</td><td>Rp 84 M</td><td><span class="badge badge-green">Baik</span></td></tr>
+                <tr><td style="font-family:monospace;font-size:11px;color:var(--text-low)">AST-0024711</td><td style="font-weight:500;color:var(--text)">Bendungan Jatigede</td><td><span class="asset-type-pill">Irigasi</span></td><td>Kab. Sumedang</td><td>Rp 2.800 M</td><td>2015</td><td>10 th</td><td>Rp 42 M</td><td><span class="badge badge-green">Baik</span></td></tr>
+                <tr><td style="font-family:monospace;font-size:11px;color:var(--text-low)">AST-0031088</td><td style="font-weight:500;color:var(--text)">Jalan Trans Kalimantan Km 0–120</td><td><span class="asset-type-pill">Jalan</span></td><td>Kalimantan Barat</td><td>Rp 840 M</td><td>2004</td><td>21 th</td><td>Rp 22 M</td><td><span class="badge badge-red">Rusak Berat</span></td></tr>
+                <tr><td style="font-family:monospace;font-size:11px;color:var(--text-low)">AST-0037241</td><td style="font-weight:500;color:var(--text)">RSUD Dr. Soetomo Surabaya</td><td><span class="asset-type-pill">Gedung</span></td><td>Kota Surabaya</td><td>Rp 1.240 M</td><td>1952</td><td>73 th</td><td>Rp 28 M</td><td><span class="badge badge-red">Perlu Revitalisasi</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /page-assets -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: FISCAL INTELLIGENCE
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-intelligence" class="page">
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px">
+          <div>
+            <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px">Fiscal Intelligence Engine</div>
+            <div style="font-size:12px;color:var(--text-low)">Analisis otomatis anomali, inefisiensi, dan peluang optimasi belanja publik</div>
+          </div>
+          <button class="topbar-btn" style="padding:8px 18px;font-size:13px" onclick="runAnalysis()">
+            ▶ Jalankan Analisis Baru
+          </button>
+        </div>
+
+        <div class="kpi-row" style="margin-bottom:24px">
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Anomali Aktif</div>
+            <div class="kpi-cell-value" style="color:var(--red)">12</div>
+            <div class="kpi-cell-delta">dari 847 indikator</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Potensi Efisiensi</div>
+            <div class="kpi-cell-value" style="color:var(--gold)">Rp 18,4 T</div>
+            <div class="kpi-cell-delta">5,5% total belanja</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Temuan Diselesaikan</div>
+            <div class="kpi-cell-value" style="color:var(--green)">47</div>
+            <div class="kpi-cell-delta">sejak Jan 2025</div>
+          </div>
+          <div class="kpi-cell">
+            <div class="kpi-cell-label">Akurasi Model</div>
+            <div class="kpi-cell-value">94,7%</div>
+            <div class="kpi-cell-delta">backtested 3 tahun</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:16px;flex-direction:column">
+
+          <div class="intel-card">
+            <div class="intel-card-header">
+              <div class="intel-severity high"></div>
+              <div class="intel-card-title">Kesenjangan Anggaran–Kualitas Jalan Nasional</div>
+              <div class="intel-card-meta">Infrastruktur · 3 hari lalu</div>
+            </div>
+            <div class="intel-card-body">
+              <div class="intel-card-text">Belanja pemeliharaan jalan nasional 2025 meningkat <strong>35%</strong> (Rp 35,8T → 48,3T) namun peningkatan persentase jalan kondisi baik hanya <strong>5%</strong> (54,6% → 57,3%). Kesenjangan elastisitas anggaran-kualitas ini mengindikasikan potensi inefisiensi senilai <strong>Rp 7,2 Triliun</strong>. Wilayah paling terdampak: Kalimantan Timur, Papua, dan Sulawesi Tengah.</div>
+              <div style="background:var(--surface2);border-radius:8px;padding:12px;margin-bottom:12px">
+                <div style="font-size:11px;font-weight:600;color:var(--text-low);margin-bottom:6px">Kemungkinan Penyebab</div>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <div style="display:flex;align-items:center;gap:8px"><div style="width:3px;height:3px;border-radius:50%;background:var(--text-low)"></div><div style="font-size:11px;color:var(--text-mid)">Mark-up pada kontrak pemeliharaan di wilayah terpencil (estimasi 15–20%)</div></div>
+                  <div style="display:flex;align-items:center;gap:8px"><div style="width:3px;height:3px;border-radius:50%;background:var(--text-low)"></div><div style="font-size:11px;color:var(--text-mid)">Spesifikasi teknis di bawah standar yang menyebabkan kerusakan berulang</div></div>
+                  <div style="display:flex;align-items:center;gap:8px"><div style="width:3px;height:3px;border-radius:50%;background:var(--text-low)"></div><div style="font-size:11px;color:var(--text-mid)">Kurangnya inspeksi post-pekerjaan yang independen</div></div>
+                </div>
+              </div>
+              <div class="intel-actions">
+                <button class="intel-action-btn primary">Buat Laporan Audit</button>
+                <button class="intel-action-btn">Drill-Down per Wilayah</button>
+                <button class="intel-action-btn">Tandai Selesai</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="intel-card">
+            <div class="intel-card-header">
+              <div class="intel-severity high"></div>
+              <div class="intel-card-title">Disparitas Biaya Konstruksi Sekolah — Jawa Timur</div>
+              <div class="intel-card-meta">Pendidikan · 5 hari lalu</div>
+            </div>
+            <div class="intel-card-body">
+              <div class="intel-card-text">Rata-rata biaya pembangunan ruang kelas baru di Jawa Timur sebesar <strong>Rp 420 Jt/RK</strong>, lebih tinggi <strong>40%</strong> dari rata-rata nasional Rp 300 Jt/RK dan 28% di atas provinsi tetangga (Jawa Tengah: Rp 328 Jt/RK). Total potensi efisiensi jika disejajarkan ke rata-rata nasional: <strong>Rp 2,8 Triliun</strong> dari 1.847 RK yang direncanakan 2025–2026.</div>
+              <div class="intel-actions">
+                <button class="intel-action-btn primary">Bandingkan Detail RAB</button>
+                <button class="intel-action-btn">Lihat Kontrak Terkait</button>
+                <button class="intel-action-btn">Delegasikan ke BPKP</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="intel-card">
+            <div class="intel-card-header">
+              <div class="intel-severity medium"></div>
+              <div class="intel-card-title">Biaya Operasional Kesehatan Anomali — 4 Provinsi</div>
+              <div class="intel-card-meta">Kesehatan · 1 minggu lalu</div>
+            </div>
+            <div class="intel-card-body">
+              <div class="intel-card-text">Biaya operasional non-medis di RSUD provinsi Riau, Kalimantan Selatan, NTT, dan Maluku rata-rata <strong>47% lebih tinggi</strong> dari benchmark nasional. Total potensi efisiensi: <strong>Rp 1,2 Triliun/tahun</strong>. Pola ini konsisten selama 3 tahun berturut-turut, mengindikasikan masalah struktural bukan seasonal.</div>
+              <div class="intel-actions">
+                <button class="intel-action-btn primary">Analisis Mendalam</button>
+                <button class="intel-action-btn">Bandingkan Benchmark</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="intel-card">
+            <div class="intel-card-header">
+              <div class="intel-severity low"></div>
+              <div class="intel-card-title">Peluang Konsolidasi Pengadaan Alat Kesehatan</div>
+              <div class="intel-card-meta">Kesehatan · 2 minggu lalu</div>
+            </div>
+            <div class="intel-card-body">
+              <div class="intel-card-text">Analisis 3.847 kontrak pengadaan alat kesehatan 2024–2025 menunjukkan <strong>variasi harga 180–340%</strong> untuk item identik antar daerah. Konsolidasi pengadaan melalui e-katalog nasional berpotensi menghemat <strong>Rp 4,7 Triliun</strong> per siklus pengadaan.</div>
+              <div class="intel-actions">
+                <button class="intel-action-btn primary">Lihat Rekomendasi Lengkap</button>
+                <button class="intel-action-btn">Ekspor ke PDF</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /page-intelligence -->
+
+
+      <!-- ════════════════════════════════════════════════════════
+           PAGE: IRIGASI, AIR BERSIH, OUTCOME (simple stubs)
+      ════════════════════════════════════════════════════════ -->
+      <div id="page-irigasi" class="page">
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card navy"><div class="stat-label"><div class="dot"></div> Jaringan Irigasi</div><div class="stat-value">8,2 <span class="stat-unit">Juta ha</span></div><div class="stat-delta up">▲ +124.000 ha</div></div>
+          <div class="stat-card gold"><div class="stat-label"><div class="dot"></div> Anggaran Irigasi</div><div class="stat-value">Rp 47,8 <span class="stat-unit">T</span></div><div class="stat-delta up">▲ +6,3%</div></div>
+          <div class="stat-card green"><div class="stat-label"><div class="dot"></div> Kondisi Baik</div><div class="stat-value">61,4 <span class="stat-unit">%</span></div><div class="stat-delta up">▲ +3,2 poin</div></div>
+          <div class="stat-card amber"><div class="stat-label"><div class="dot"></div> Sawah Terairi</div><div class="stat-value">6,1 <span class="stat-unit">Juta ha</span></div><div class="stat-delta up">▲ +2,1%</div></div>
+        </div>
+        <div class="card"><div style="padding:40px;text-align:center;color:var(--text-low)"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin:0 auto 12px;display:block;opacity:.3"><path d="M2 12h20M2 6h8M14 6h8M2 18h4M18 18h4"/></svg><div style="font-size:14px;font-weight:500;color:var(--text-mid)">Modul Irigasi</div><div style="font-size:12px;margin-top:6px">Dashboard lengkap jaringan irigasi, bendungan, dan dampak produktivitas pertanian.</div></div></div>
+      </div>
+
+      <div id="page-airbersih" class="page">
+        <div class="grid-4" style="margin-bottom:20px">
+          <div class="stat-card blue"><div class="stat-label"><div class="dot"></div> Akses Air Bersih</div><div class="stat-value">91,4 <span class="stat-unit">%</span></div><div class="stat-delta up">▲ +2,8 poin</div></div>
+          <div class="stat-card gold"><div class="stat-label"><div class="dot"></div> Anggaran Air Bersih</div><div class="stat-value">Rp 28,4 <span class="stat-unit">T</span></div><div class="stat-delta up">▲ +11,2%</div></div>
+          <div class="stat-card green"><div class="stat-label"><div class="dot"></div> Sambungan PDAM</div><div class="stat-value">24,7 <span class="stat-unit">Juta</span></div><div class="stat-delta up">▲ +1,2 Jt</div></div>
+          <div class="stat-card amber"><div class="stat-label"><div class="dot"></div> Tanpa Akses Aman</div><div class="stat-value">23,4 <span class="stat-unit">Juta</span></div><div class="stat-delta down">▼ -3,1 Jt</div></div>
+        </div>
+        <div class="card"><div style="padding:40px;text-align:center;color:var(--text-low)"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin:0 auto 12px;display:block;opacity:.3"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20"/></svg><div style="font-size:14px;font-weight:500;color:var(--text-mid)">Modul Air Bersih</div><div style="font-size:12px;margin-top:6px">Peta sebaran akses air bersih, jaringan PDAM, dan analisis kesenjangan antar wilayah.</div></div></div>
+      </div>
+
+      <div id="page-outcome" class="page">
+        <div class="kpi-row">
+          <div class="kpi-cell"><div class="kpi-cell-label">IPM Nasional</div><div class="kpi-cell-value">74,38</div><div class="kpi-cell-delta"><span class="up">+0,62</span> poin</div></div>
+          <div class="kpi-cell"><div class="kpi-cell-label">Angka Kemiskinan</div><div class="kpi-cell-value">8,34 <span style="font-size:13px;color:var(--text-low)">%</span></div><div class="kpi-cell-delta"><span class="up">▼ -0,84 poin</span></div></div>
+          <div class="kpi-cell"><div class="kpi-cell-label">Gini Ratio</div><div class="kpi-cell-value">0,380</div><div class="kpi-cell-delta"><span class="up">▼ -0,01</span></div></div>
+          <div class="kpi-cell"><div class="kpi-cell-label">Pertumbuhan PDB</div><div class="kpi-cell-value">5,11 <span style="font-size:13px;color:var(--text-low)">%</span></div><div class="kpi-cell-delta"><span class="up">+0,28 poin</span></div></div>
+        </div>
+        <div class="card"><div style="padding:40px;text-align:center;color:var(--text-low)"><div style="font-size:14px;font-weight:500;color:var(--text-mid)">Analisis Outcome Mendalam</div><div style="font-size:12px;margin-top:6px">Korelasi belanja sektoral dengan indikator pembangunan manusia, kemiskinan, dan ketimpangan.</div></div></div>
+      </div>
+
+      <div id="page-admin" class="page">
+        <div class="card"><div style="padding:32px">
+          <div style="font-size:15px;font-weight:600;margin-bottom:16px">Manajemen Pengguna</div>
+          <table class="data-table">
+            <thead><tr><th>Nama</th><th>Email</th><th>Peran</th><th>Level Akses</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:500">Ahmad Wijaya</td><td>a.wijaya@kemenkeu.go.id</td><td>Analis Senior</td><td><span class="badge badge-navy">Nasional</span></td><td><span class="badge badge-green">Aktif</span></td></tr>
+              <tr><td style="font-weight:500">Siti Rahayu</td><td>s.rahayu@bpk.go.id</td><td>Auditor</td><td><span class="badge badge-navy">Nasional</span></td><td><span class="badge badge-green">Aktif</span></td></tr>
+              <tr><td style="font-weight:500">Budi Santoso</td><td>b.santoso@jabarprov.go.id</td><td>Perencana APBD</td><td><span class="badge badge-blue">Provinsi</span></td><td><span class="badge badge-green">Aktif</span></td></tr>
+              <tr><td style="font-weight:500">Dewi Kurniasih</td><td>d.kurniasih@bandung.go.id</td><td>Operator Kota</td><td><span class="badge badge-amber">Kabupaten/Kota</span></td><td><span class="badge badge-amber">Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<!-- School Modal Backdrop Script trigger -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+
+const pageMap = {
+  dashboard:     { title: 'Dashboard Nasional',     crumb: 'Dashboard Nasional' },
+  fiscalmap:     { title: 'Fiscal Map',             crumb: 'Fiscal Map' },
+  anggaran:      { title: 'Anggaran',               crumb: 'Anggaran' },
+  pendidikan:    { title: 'Pendidikan',             crumb: 'Sektor → Pendidikan' },
+  kesehatan:     { title: 'Kesehatan',              crumb: 'Sektor → Kesehatan' },
+  jalan:         { title: 'Infrastruktur Jalan',    crumb: 'Sektor → Infrastruktur Jalan' },
+  irigasi:       { title: 'Irigasi',                crumb: 'Sektor → Irigasi' },
+  airbersih:     { title: 'Air Bersih',             crumb: 'Sektor → Air Bersih' },
+  assets:        { title: 'Asset Management',       crumb: 'Analitik → Asset Management' },
+  outcome:       { title: 'Outcome Analysis',       crumb: 'Analitik → Outcome Analysis' },
+  intelligence:  { title: 'Fiscal Intelligence',   crumb: 'Analitik → Fiscal Intelligence' },
+  admin:         { title: 'Administration',         crumb: 'Sistem → Administration' },
+};
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + id);
+  if (target) target.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const meta = pageMap[id];
+  if (meta) {
+    document.getElementById('topbar-title').textContent = meta.title;
+    document.getElementById('topbar-crumb').textContent = meta.crumb;
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) {
+        n.classList.add('active');
+      }
+    });
+  }
+  document.querySelector('.content').scrollTop = 0;
+}
+
+// ── MAP INTERACTION ───────────────────────────────────────────────────────
+
+function selectProvince(name, vfm, apbd, realisasi) {
+  document.getElementById('province-empty').style.display = 'none';
+  const det = document.getElementById('province-detail');
+  det.style.display = 'block';
+  document.getElementById('prov-name').textContent = name;
+  document.getElementById('prov-apbd').textContent = apbd;
+  document.getElementById('prov-realisasi').textContent = realisasi;
+  document.getElementById('prov-vfm').textContent = vfm;
+  document.getElementById('prov-vfm-bar').style.width = vfm + '%';
+
+  const bar = document.getElementById('prov-vfm-bar');
+  bar.style.background = vfm >= 80 ? '#C9A227' : vfm >= 70 ? '#16A34A' : vfm >= 60 ? '#2563EB' : '#DC2626';
+}
+
+function handleMapClick(e) {
+  if (!e.target.closest('.province-group')) return;
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+
+function showSchoolModal() {
+  document.getElementById('school-modal').style.display = 'flex';
+}
+function closeSchoolModal() {
+  document.getElementById('school-modal').style.display = 'none';
+}
+
+// ── ANALYSIS ANIMATION ────────────────────────────────────────────────────
+
+function runAnalysis() {
+  const btn = event.target;
+  btn.textContent = '⟳ Menganalisis...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = '▶ Jalankan Analisis Baru';
+    btn.disabled = false;
+  }, 2000);
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────
+
+function drawCharts() {
+  // Chart 1: Trend Anggaran
+  const c1 = document.getElementById('chart-trend');
+  if (!c1) return;
+  const ctx1 = c1.getContext('2d');
+  const w1 = c1.offsetWidth; c1.width = w1; c1.height = 200;
+  const labels = ['2020','2021','2022','2023','2024','2025'];
+  const alloc  = [2590, 2750, 3106, 3047, 3068, 3325];
+  const real   = [2378, 2605, 2928, 2801, 2795, 2917];
+  drawLineChart(ctx1, w1, 200, labels, [
+    { data: alloc, color: '#0B1F3A', fill: 'rgba(11,31,58,0.06)' },
+    { data: real,  color: '#C9A227', fill: 'rgba(201,162,39,0.06)' }
+  ], 2400, 3400);
+
+  // Chart 2: Outcome
+  const c2 = document.getElementById('chart-outcome');
+  if (!c2) return;
+  const ctx2 = c2.getContext('2d');
+  const w2 = c2.offsetWidth; c2.width = w2; c2.height = 220;
+  const provs = ['DIY','Bali','Jateng','Jabar','Jatim','Sumut'];
+  const budg  = [4.2, 5.8, 24.1, 31.4, 35.2, 18.7];
+  const scores= [88.4, 85.1, 81.7, 79.2, 76.8, 71.3];
+  drawBarChart(ctx2, w2, 220, provs, budg, scores);
+}
+
+function drawLineChart(ctx, w, h, labels, series, yMin, yMax) {
+  const pad = { top: 16, right: 16, bottom: 28, left: 40 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+  const n = labels.length;
+  const yRange = yMax - yMin;
+
+  function xPos(i) { return pad.left + (i / (n - 1)) * cw; }
+  function yPos(v) { return pad.top + ch - ((v - yMin) / yRange) * ch; }
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ch / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+    const val = yMax - (yRange / 4) * i;
+    ctx.fillStyle = '#94A3B8'; ctx.font = '10px Inter'; ctx.textAlign = 'right';
+    ctx.fillText(Math.round(val).toLocaleString(), pad.left - 6, y + 4);
+  }
+
+  // X labels
+  ctx.fillStyle = '#94A3B8'; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+  labels.forEach((l, i) => ctx.fillText(l, xPos(i), h - 8));
+
+  series.forEach(s => {
+    // Fill
+    ctx.beginPath();
+    ctx.moveTo(xPos(0), yPos(s.data[0]));
+    s.data.forEach((v, i) => { if (i > 0) ctx.lineTo(xPos(i), yPos(v)); });
+    ctx.lineTo(xPos(n - 1), pad.top + ch);
+    ctx.lineTo(xPos(0), pad.top + ch);
+    ctx.closePath();
+    ctx.fillStyle = s.fill; ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    s.data.forEach((v, i) => {
+      i === 0 ? ctx.moveTo(xPos(i), yPos(v)) : ctx.lineTo(xPos(i), yPos(v));
+    });
+    ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+
+    // Dots
+    s.data.forEach((v, i) => {
+      ctx.beginPath();
+      ctx.arc(xPos(i), yPos(v), 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff'; ctx.fill();
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.stroke();
+    });
+  });
+}
+
+function drawBarChart(ctx, w, h, labels, budgets, scores) {
+  const pad = { top: 16, right: 16, bottom: 28, left: 36 };
+  const cw = w - pad.left - pad.right;
+  const ch = h - pad.top - pad.bottom;
+  const n = labels.length;
+  const bw = (cw / n) * 0.5;
+  const bMax = Math.max(...budgets);
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Grid
+  ctx.strokeStyle = '#E2E8F0'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ch / 4) * i;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left + cw, y); ctx.stroke();
+  }
+
+  labels.forEach((l, i) => {
+    const cx = pad.left + (i + 0.5) * (cw / n);
+    const bh = (budgets[i] / bMax) * ch * 0.85;
+    // Bar
+    ctx.fillStyle = '#0B1F3A';
+    roundRect(ctx, cx - bw / 2, pad.top + ch - bh, bw, bh, [3, 3, 0, 0]);
+    ctx.fill();
+
+    // Score dot
+    const sy = pad.top + ch - (scores[i] / 100) * ch;
+    ctx.beginPath();
+    ctx.arc(cx, sy, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#C9A227'; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 8px Inter'; ctx.textAlign = 'center';
+    ctx.fillText(scores[i], cx, sy - 10);
+
+    // Label
+    ctx.fillStyle = '#64748B'; ctx.font = '10px Inter'; ctx.textAlign = 'center';
+    ctx.fillText(l, cx, h - 8);
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  if (typeof r === 'number') r = [r, r, r, r];
+  ctx.beginPath();
+  ctx.moveTo(x + r[0], y);
+  ctx.lineTo(x + w - r[1], y);
+  ctx.arcTo(x + w, y, x + w, y + r[1], r[1]);
+  ctx.lineTo(x + w, y + h - r[2]);
+  ctx.arcTo(x + w, y + h, x + w - r[2], y + h, r[2]);
+  ctx.lineTo(x + r[3], y + h);
+  ctx.arcTo(x, y + h, x, y + h - r[3], r[3]);
+  ctx.lineTo(x, y + r[0]);
+  ctx.arcTo(x, y, x + r[0], y, r[0]);
+  ctx.closePath();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', function() {
+  drawCharts();
+  window.addEventListener('resize', drawCharts);
+});
+
+// Close modal on backdrop click
+document.getElementById('school-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSchoolModal();
+});
+</script>
+</body>
+</html>
